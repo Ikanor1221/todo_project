@@ -1,0 +1,209 @@
+:root {
+    --bgColor1: #ececec;
+    --bgColor2: #f2f3f5;
+    --bgColor3: #fefcfe;
+    --bgColorHover: rgb(199, 195, 195);
+    --textColor: #374958;
+    --mainGreen: #2abd67;
+  }
+  
+  li {
+    list-style: none;
+  }
+  
+  a {
+    color: inherit;
+  }
+
+  button {
+    border: none;
+    background-color: inherit;
+    cursor: pointer;
+    font-weight: inherit;
+  }
+  
+  * {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    text-decoration: none;
+    color: var(--textColor);
+    font-family: inherit;
+  }
+
+  /* body > *, header > *, .main_display > * {
+    border: solid;
+  } */
+  
+  body {
+    display: flex;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: 80px auto;
+    background-color: var(--bgColor1);
+  }
+
+  header {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    border-bottom: 2px solid var(--mainGreen);
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 3rem;
+    align-self: center;
+    justify-self: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .menu_button_holder {
+    align-self: center;
+    justify-self: start;
+  }
+
+  .main_display {
+    display: grid;
+    grid-template-columns: 300px auto;
+    
+  }
+
+  .menu_main_bar {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 25px;
+    padding: 15px;
+    padding-top: 25px;
+    background-color: var(--bgColor3);
+  }
+
+  .menu_main_bar * {
+    font-size: 1.5rem;
+    width: 100%;
+  }
+
+  .menu_secondary_bar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .menu_secondary_bar h2 {
+    border-bottom: 2px solid var(--textColor);
+  }
+
+  .menu_list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .menu_list > li {
+    display: flex;
+    align-items: center;
+  }
+
+  .menu_list > li > span {
+    display: flex;
+    width: auto;
+    justify-content: flex-end;
+    margin: 6px;
+  }
+
+  .menu_main_bar a, .menu_main_bar button {
+    display: flex;
+    gap: 6px;
+    padding: 8px;
+    border-radius: 4px;
+  }
+
+  #projects li {
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .menu_main_bar a span, .menu_main_bar button span{
+    width: auto;
+  }
+
+  .menu_main_bar a:hover, #projects li:hover, .menu_main_bar button:hover {
+    background-color: var(--bgColorHover);
+  }
+
+  .menu_main_bar a.selected {
+    background-color: lightgreen;
+    border-left: 5px solid green;
+  }
+
+
+  #menu_control {
+    padding: 5px;
+    border-radius: 3px;
+  }
+
+  #menu_control *{
+    font-size: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #menu_control:hover {
+    background-color: var(--bgColorHover);
+    cursor: pointer;
+  }
+
+  .header_mark {
+    font-size: 3rem;
+    color: var(--mainGreen);
+  }
+
+  /* #add_project {
+
+  } */
+
+  .colored_green {
+    color: var(--mainGreen);
+    font-size: inherit;
+  }
+
+  main {
+    padding: 40px;
+    display: grid;
+    grid-template-rows: 100px auto;
+    gap: 10px;
+  }
+
+  main > h3 {
+    background-color: var(--mainGreen);
+    border-radius: 3px;
+    font-size: 3rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: var(--bgColor3);
+    padding: 15px;
+  }
+
+  #tasks {
+    display: grid;
+    grid-template-rows: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 10px;
+  }
+
+  #tasks > div  {
+    border: 1px solid var(--textColor);
+    border-radius: 3px;
+    padding: 10px;
+  }
