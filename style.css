@@ -121,7 +121,7 @@
     margin: 6px;
   }
 
-  .menu_main_bar a, .menu_main_bar button {
+  .menu_main_bar a, #add_project {
     display: flex;
     gap: 6px;
     padding: 8px;
@@ -212,6 +212,7 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
+    position: relative;
   }
 
   .description {
@@ -223,7 +224,7 @@
     gap: 5px;
   }
 
-  .main_checkbox {
+  .main_checkbox, .fav_checkbox, .modify_button{
     display: none;
   }
 
@@ -259,10 +260,6 @@
     padding: 5px;
   }
 
-  .fav_checkbox {
-    display: none;
-  }
-
   .fav_checkbox ~ span{
     display: flex;
     justify-content: center;
@@ -280,4 +277,57 @@
 
   .fav_checkbox:checked ~ span{
     color: #fec810;
+  }
+
+  .modify_button ~ span{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .taskMenu {
+    position: absolute;
+    top: -55px;
+    right: 14px;
+    z-index: 2;
+    background-color: var(--bgColor1);
+    /* border: 1px solid var(--textColor); */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgb(0 0 0 / 40%);
+    transition: 0.3s ease-in;
+    width: auto;
+  }
+
+  .taskMenu button {
+    font-size: 1.2rem;
+    padding: 7px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    border-radius: 5px;
+  }
+
+  .taskMenu li {
+    width: 100%;
+  }
+
+  .taskMenu button:hover {
+    background-color: var(--bgColor3);
+  }
+
+  .hidden {
+    opacity: 0;
+  }
+
+  .menu_list > li {
+    position: relative;
+  }
+  
+  .menu_modify_button {
+    width: auto;
   }

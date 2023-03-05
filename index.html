@@ -37,7 +37,14 @@
             <div id="projects" class="menu_secondary_bar">
                 <h2>Projects</h2>
                 <menu class="menu_list">
-                    <li><a href="#"><span class="material-symbols-outlined">launcher_assistant_off</span>123</a><span class="material-symbols-outlined">more_horiz</span></li>
+                    <li>
+                        <a href="#"><span class="material-symbols-outlined">launcher_assistant_off</span>123</a>
+                        <button id="buttonProjectMenu1" class="menu_modify_button"><span class="material-symbols-outlined">more_horiz</span></button>
+                        <menu class="taskMenu hidden" id="projectMenu1">
+                            <li><button>Rename</button></li>
+                            <li><button>Delete</button></li>
+                        </menu>
+                    </li>
                 </menu>
                 <button id="add_project"><span class="material-symbols-outlined">add_circle</span>Add Project</button>
             </div>
@@ -45,9 +52,9 @@
         <main>
             <h3>All Tasks</h3>
             <div id="tasks">
-                <div class="task">
-                    <label for="checkbox1main">
-                        <input class="main_checkbox" id="checkbox1main" type="checkbox">
+                <div id="task1" class="task">
+                    <label for="checkboxMain1">
+                        <input class="main_checkbox" id="checkboxMain1" type="checkbox">
                         <span class="control"></span>
                     </label>
                     <div class="description">
@@ -55,11 +62,18 @@
                         <p>Description</p>
                     </div>
                     <p class="date">26.02.2023</p>
-                    <label for="checkbox1fav">
-                        <input class="fav_checkbox" id="checkbox1fav" type="checkbox">
+                    <label for="checkboxFav1">
+                        <input class="fav_checkbox" id="checkboxFav1" type="checkbox">
                         <span class="material-icons-outlined"></span>
                     </label>
-                    <button><span class="material-symbols-outlined">more_vert</span></button>
+                    <label for="buttonModify1">
+                        <input class="modify_button" id="buttonModify1" type="button">
+                        <span class="material-icons-outlined">more_vert</span>
+                    </label>
+                    <menu class="taskMenu hidden" id="taskMenu1">
+                        <li><button>Edit</button></li>
+                        <li><button>Delete</button></li>
+                    </menu>
                 </div>
                 <div class="task"></div>
                 <div class="task"></div>
