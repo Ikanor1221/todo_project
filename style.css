@@ -198,12 +198,57 @@
 
   #tasks {
     display: grid;
-    grid-template-rows: repeat(auto-fill, minmax(70px, 1fr));
+    align-self: start;
+    /* grid-template-rows: repeat(auto-fill, minmax(30px, auto)); */
+    grid-auto-rows: minmax(50px, auto);
     gap: 10px;
   }
 
-  #tasks > div  {
+  .task  {
     border: 1px solid var(--textColor);
     border-radius: 3px;
     padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .description {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .task_checkbox {
+    display: none;
+  }
+
+  .task_checkbox ~ span{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--textColor);
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .task_checkbox:checked ~ span{
+    background-color: var(--mainGreen);
+  }
+
+  .task_checkbox:checked ~ span::after{
+    display: inline-block;
+    position: absolute;
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color: var(--textColor);
+    content: "";
   }
