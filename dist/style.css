@@ -223,11 +223,11 @@
     gap: 5px;
   }
 
-  .task_checkbox {
+  .main_checkbox {
     display: none;
   }
 
-  .task_checkbox ~ span{
+  .main_checkbox ~ span{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -239,11 +239,11 @@
     position: relative;
   }
 
-  .task_checkbox:checked ~ span{
+  .main_checkbox:checked ~ span{
     background-color: var(--mainGreen);
   }
 
-  .task_checkbox:checked ~ span::after{
+  .main_checkbox:checked ~ span::after{
     display: inline-block;
     position: absolute;
     height: 10px;
@@ -251,4 +251,33 @@
     border-radius: 50%;
     background-color: var(--textColor);
     content: "";
+  }
+
+  .date {
+    border: 1px solid var(--textColor);
+    border-radius: 5px;
+    padding: 5px;
+  }
+
+  .fav_checkbox {
+    display: none;
+  }
+
+  .fav_checkbox ~ span{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .fav_checkbox ~ span::after{
+    content: "grade";
+  }
+
+  .fav_checkbox:checked ~ span::after{
+    content: "star";
+  }
+
+  .fav_checkbox:checked ~ span{
+    color: #fec810;
   }

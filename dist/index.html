@@ -8,6 +8,8 @@
     <title>YourToDo</title>
     <script defer src="main.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,500,0,200" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -44,17 +46,20 @@
             <h3>All Tasks</h3>
             <div id="tasks">
                 <div class="task">
-                    <label for="checkbox1">
-                        <input class="task_checkbox" id="checkbox1" type="checkbox">
+                    <label for="checkbox1main">
+                        <input class="main_checkbox" id="checkbox1main" type="checkbox">
                         <span class="control"></span>
                     </label>
                     <div class="description">
                         <h4>Title</h4>
                         <p>Description</p>
                     </div>
-                    <p>26.02.2023</p>
-                    <button>1</button>
-                    <button>2</button>
+                    <p class="date">26.02.2023</p>
+                    <label for="checkbox1fav">
+                        <input class="fav_checkbox" id="checkbox1fav" type="checkbox">
+                        <span class="material-icons-outlined"></span>
+                    </label>
+                    <button><span class="material-symbols-outlined">more_vert</span></button>
                 </div>
                 <div class="task"></div>
                 <div class="task"></div>
