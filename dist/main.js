@@ -10,6 +10,7 @@ const projectMenu = document.querySelector("#projectMenu1");
 
 menuModify.addEventListener("click", (e) => {
     projectMenu.classList.toggle("hidden");
+    
 })
 
 const menuControl = document.querySelector("#menu_control");
