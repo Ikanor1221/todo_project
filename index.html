@@ -23,8 +23,8 @@
         <div>
         </div>
     </header>
-    <div id="sorting" class="main_display">
-        <nav class="menu_main_bar">
+    <div id="sorting" class="main_display grid_auto">
+        <nav id="menu_main_bar" class="menu_main_bar removed">
             <div class="menu_secondary_bar">
                 <h2>Home</h2>
                 <menu class="menu_list">
@@ -38,9 +38,9 @@
                 <h2>Projects</h2>
                 <menu class="menu_list">
                     <li>
-                        <a href="#"><span class="material-symbols-outlined">launcher_assistant_off</span>123</a>
+                        <a href="#"><span class="material-symbols-outlined">launch</span>123</a>
                         <button id="buttonProjectMenu1" class="menu_modify_button"><span class="material-symbols-outlined">more_horiz</span></button>
-                        <menu class="taskMenu hidden" id="projectMenu1">
+                        <menu class="emergingMenu moved hidden" id="projectMenu1">
                             <li><button>Rename</button></li>
                             <li><button>Delete</button></li>
                         </menu>
@@ -58,22 +58,24 @@
                         <span class="control"></span>
                     </label>
                     <div class="description">
-                        <h4>Title</h4>
-                        <p>Description</p>
+                        <h4>TitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitle</h4>
+                        <p>Description Description DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription Description</p>
                     </div>
                     <p class="date">26.02.2023</p>
                     <label for="checkboxFav1">
                         <input class="fav_checkbox" id="checkboxFav1" type="checkbox">
                         <span class="material-icons-outlined"></span>
                     </label>
-                    <label for="buttonModify1">
-                        <input class="modify_button" id="buttonModify1" type="button">
-                        <span class="material-icons-outlined">more_vert</span>
-                    </label>
-                    <menu class="taskMenu hidden" id="taskMenu1">
-                        <li><button>Edit</button></li>
-                        <li><button>Delete</button></li>
-                    </menu>
+                    <div class="menuHolder">
+                        <label for="buttonModify1">
+                            <input class="modify_button" id="buttonModify1" type="button">
+                            <span class="material-icons-outlined">more_vert</span>
+                        </label>
+                        <menu class="emergingMenu hidden" id="taskMenu1">
+                            <li><button>Edit</button></li>
+                            <li><button>Delete</button></li>
+                        </menu>
+                    </div>
                 </div>
                 <div class="task"></div>
                 <div class="task"></div>

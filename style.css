@@ -6,7 +6,7 @@
     --textColor: #374958;
     --mainGreen: #2abd67;
   }
-  
+
   li {
     list-style: none;
   }
@@ -32,15 +32,14 @@
     font-family: inherit;
   }
 
-  /* body > *, header > *, .main_display > * {
-    border: solid;
-  } */
   
   body {
     display: flex;
     min-height: 100vh;
+    width: 100vw;
     display: grid;
     grid-template-rows: 80px auto;
+    grid-template-columns: 100vw;
     background-color: var(--bgColor1);
   }
 
@@ -183,6 +182,7 @@
     display: grid;
     grid-template-rows: 100px auto;
     gap: 10px;
+    max-width: 100%;
   }
 
   main > h3 {
@@ -212,16 +212,26 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-    position: relative;
+    /* position: relative; */
   }
 
   .description {
-    flex: 1;
+    flex: auto;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
     gap: 5px;
+  }
+
+  .description * {
+    word-break: break-all;
+    overflow-wrap: break-word;
+    -ms-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    overflow: hidden;
+
   }
 
   .main_checkbox, .fav_checkbox, .modify_button{
@@ -286,13 +296,16 @@
     cursor: pointer;
   }
 
-  .taskMenu {
+  .menuHolder {
+    position: relative;
+  }
+
+  .emergingMenu {
     position: absolute;
-    top: -55px;
-    right: 14px;
+    top: -70px;
+    right: 10px;
     z-index: 2;
     background-color: var(--bgColor1);
-    /* border: 1px solid var(--textColor); */
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -303,7 +316,12 @@
     width: auto;
   }
 
-  .taskMenu button {
+  .emergingMenu.moved {
+    top: -65px;
+    right: 5px;
+  }
+
+  .emergingMenu button {
     font-size: 1.2rem;
     padding: 7px;
     width: 100%;
@@ -312,11 +330,11 @@
     border-radius: 5px;
   }
 
-  .taskMenu li {
+  .emergingMenu li {
     width: 100%;
   }
 
-  .taskMenu button:hover {
+  .emergingMenu button:hover {
     background-color: var(--bgColor3);
   }
 
@@ -330,4 +348,12 @@
   
   .menu_modify_button {
     width: auto;
+  }
+
+  .removed {
+    display: none;
+  }
+
+  .grid_auto {
+    grid-template-columns: auto;
   }
