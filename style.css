@@ -238,7 +238,7 @@
 
   }
 
-  .main_checkbox, .fav_checkbox, .modify_button{
+  .main_checkbox, .fav_checkbox{
     display: none;
   }
 
