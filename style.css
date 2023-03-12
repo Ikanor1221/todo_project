@@ -22,6 +22,10 @@
     font-weight: inherit;
   }
   
+  html {
+    font-size: 16px;
+  }
+
   * {
     margin: 0px;
     padding: 0px;
@@ -356,4 +360,57 @@
 
   .grid_auto {
     grid-template-columns: auto;
+  }
+
+
+  @media (max-width: 600px) {
+
+    html {
+      font-size: 13px;
+    }
+
+    .main_display {
+      display: grid;
+      grid-template-columns: 150px auto;
+    }
+
+    .grid_auto {
+      grid-template-columns: auto;
+    }
+
+    .task  {
+      display: grid;
+      grid-template-columns: auto auto auto auto;
+      grid-template-rows: auto auto;
+      grid-template-areas: "a b b b" ". c d e";
+      grid-auto-flow: row;
+    }
+
+    .checkbox {
+      grid-area: a;
+    }
+
+    .description {
+      grid-area: b;
+    }
+
+    .date {
+      grid-area: c;
+      justify-self: center;
+    }
+    .favorite {
+      grid-area: d;
+    }
+    .menuHolder {
+      grid-area: e;
+    } 
+
+    main {
+      padding: 7px;
+    }
+
+
+  .menu_main_bar {
+    padding: 5px;
+  }
   }
