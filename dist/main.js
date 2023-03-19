@@ -43,6 +43,7 @@ function CreateTask(title, description, date, importance, project) {
 
 function CreateTaskCollection() {
     const collectionOfTasks = [];
+    const collectionOfProjects = [];
     let today = new Date();
 
 
@@ -53,8 +54,20 @@ function CreateTaskCollection() {
         return;
     }
 
+    const addProject = (projectName) => {
+        if (!collectionOfProjects.includes(projectName)) {
+            collectionOfProjects.push(projectName);
+        }
+        // else console.log("No!")
+        return;
+    }
+
     const returnTasksAll = () => {
         return collectionOfTasks;
+    }
+
+    const returnProjectsAll = () => {
+        return collectionOfProjects;
     }
 
     const returnTasksToday = () => {
@@ -92,34 +105,87 @@ function CreateTaskCollection() {
         return collectionOfTasksImportant;
     }
 
+    const returnTasksProject = (projectName) => {
+        const collectionOfTasksProject= [];
+        for (let task in collectionOfTasks)
+            {
+                if  (collectionOfTasks[task].project == projectName) {
+                    collectionOfTasksProject.push(collectionOfTasks[task]);
+                }
+            }
+        return collectionOfTasksProject;
+    }
+
     return {
         addTask,
+        addProject,
         returnTasksAll,
+        returnProjectsAll,
         returnTasksToday,
         returnTasksNextWeek,
-        returnTasksImportant
+        returnTasksImportant,
+        returnTasksProject
+    }
+}
+
+function createScreenRenderer () {
+    const tasksScreen = document.querySelector("#tasks");
+
+    function generateTaskElement(task, number) {
+        const checked = (task.importance ? "checked" : "")
+        let taskElement = `                
+        <div id="task${number}" class="task">
+        <label class="checkbox" for="checkboxMain1">
+            <input class="main_checkbox" id="checkboxMain1" type="checkbox">
+            <span class="control"></span>
+        </label>
+        <div class="description">
+            <h4>${task.title}</h4>
+            <p>${task.description}</p>
+        </div>
+        <p class="date">${task.date}</p>
+        <label class="favorite" for="checkboxFav1">
+            <input class="fav_checkbox" id="checkboxFav1" type="checkbox" ${checked}>
+            <span class="material-icons-outlined"></span>
+        </label>
+        <div class="menuHolder">
+            <button class="modify_button" id="buttonModify1">
+                <!-- <input class="modify_button" id="buttonModify1" type="button"> -->
+                <span class="material-icons-outlined">more_vert</span>
+            </button>
+            <menu class="emergingMenu hidden" id="taskMenu1">
+                <li><button>Edit</button></li>
+                <li><button>Delete</button></li>
+            </menu>
+        </div>
+        </div>`
+        return taskElement
+    }
+
+    return {
+        generateTaskElement
     }
 }
 
 
 let taskCollection = CreateTaskCollection();
-taskCollection.addTask("1", "123", "2122-01-21", false, "project1");
-taskCollection.addTask("2", "231", "2029-03-25", true, "project2");
-taskCollection.addTask("2", "231", "2132-09-19", true, "project1");
-taskCollection.addTask("2", "231", "2023-03-23", false, "project1");
-taskCollection.addTask("2", "231", "2023-03-20", true, "project1");
 
-const GBdate = new Intl.DateTimeFormat("en-GB", {});
-// task.updateImportance(false);
-// console.log((taskCollection.returnTasksAll()[0].date))
-// console.log(GBdate.format(taskCollection.returnTasksAll()[0].date))
+taskCollection.addProject("Daily Tasks");
+taskCollection.addProject("Global Tasks");
+taskCollection.addProject("Global Tasks");
 
-console.log(taskCollection.returnTasksImportant())
 
-// .initialBookCollection.slice().sort((a, b) => a.published - b.published);
-//       for (let number in sortedCollection) {
-//         display.insertAdjacentHTML(
-//           "beforeend",
-//           sortedCollection[number].generateHTML(number)
-//         );
-//       }
+taskCollection.addTask("Wash dishes", "Wash all the dishes at your home", "2023-03-21", false, taskCollection.returnProjectsAll()[0]);
+taskCollection.addTask("Fix Bike", "The tire must be changed", "2023-03-25", true, taskCollection.returnProjectsAll()[0]);
+taskCollection.addTask("Finish the Odin project", "The last project is left", "2023-09-19", true, taskCollection.returnProjectsAll()[1]);
+taskCollection.addTask("Get a job", "Get a job as a Web Developer", "2023-03-23", true, taskCollection.returnProjectsAll()[1]);
+taskCollection.addTask("Build a house", "Find a suitable location and for the good price", "2030-03-20", false, taskCollection.returnProjectsAll()[1]);
+
+
+// console.log(taskCollection.returnTasksProject("Daily Tasks"))
+
+let screenRenderer = createScreenRenderer();
+0
+// console.log(taskCollection.returnTasksProject("Daily Tasks")[0])
+
+console.log(screenRenderer.generateTaskElement(taskCollection.returnTasksProject("Daily Tasks")[0], 1));
