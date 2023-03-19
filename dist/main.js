@@ -41,6 +41,13 @@ function CreateTaskCollection() {
     let today = new Date();
     let taskId = 0;
 
+    const returnTaskById = (taskId) => {
+        let task = collectionOfTasks.find(object => {
+            return object.id === taskId;
+        })
+        // console.log(index)
+        return task;
+    }
 
     const addTask = (title, description, date, importance, project) => {
         let task = CreateTask(title, description, date, importance, project, taskId);
@@ -120,7 +127,8 @@ function CreateTaskCollection() {
         returnTasksToday,
         returnTasksNextWeek,
         returnTasksImportant,
-        returnTasksProject
+        returnTasksProject,
+        returnTaskById
     }
 }
 
@@ -167,16 +175,21 @@ function createScreenRenderer () {
     }
 
     function initializeTask (number) {
-        let taskMenu = document.querySelector("#taskMenu"+number);
-        let bodyElement = document.querySelector("body");
+        const taskMenu = document.querySelector("#taskMenu"+number);
+        const bodyElement = document.querySelector("body");
 
         bodyElement.addEventListener("click", (e) => {
-
             if (!e.target.closest("#buttonModify"+number) || !taskMenu.classList.contains("hidden")) {
                 taskMenu.classList.add("hidden");
             } else {
                 taskMenu.classList.remove("hidden");
             }
+        })
+
+        const importanceCheckbox = document.querySelector("#checkboxFav"+number);
+        importanceCheckbox.addEventListener("change", (e) => {
+            if (e.currentTarget.checked) taskCollection.returnTaskById(number).importance = true;
+            else taskCollection.returnTaskById(number).importance = false;
         })
     return
     }
@@ -206,3 +219,9 @@ let screenRenderer = createScreenRenderer();
 // console.log(taskCollection.returnTasksProject("Daily Tasks")[0])
 
 screenRenderer.renderTasks(taskCollection.returnTasksNextWeek())
+
+// console.log(taskCollection.returnTaskById(1));
+// taskCollection.returnTaskById(1).title = "111111123312";
+// console.log(taskCollection.returnTaskById(1));
+
+console.log(taskCollection.returnTaskById(1));
