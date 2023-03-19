@@ -1,18 +1,11 @@
-const taskModify = document.querySelector("#buttonModify1");
-const taskMenu = document.querySelector("#taskMenu1");
+const GBdate = new Intl.DateTimeFormat("en-GB", {});
 
-const menuModify = document.querySelector("#buttonProjectMenu1");
-const projectMenu = document.querySelector("#projectMenu1");
+let menuModify = document.querySelector("#buttonProjectMenu1");
+let projectMenu = document.querySelector("#projectMenu1");
 
-const bodyElement = document.querySelector("body");
+let bodyElement = document.querySelector("body");
 
 bodyElement.addEventListener("click", (e) => {
-
-    if (!e.target.closest("#buttonModify1") || !taskMenu.classList.contains("hidden")) {
-        taskMenu.classList.add("hidden");
-    } else {
-         taskMenu.classList.remove("hidden");
-    }
 
     if (!e.target.closest("#buttonProjectMenu1") || !projectMenu.classList.contains("hidden")) {
         projectMenu.classList.add("hidden");
@@ -30,14 +23,15 @@ menuControl.addEventListener("click", (e) => {
     mainScreen.classList.toggle("grid_auto");
 })
 
-function CreateTask(title, description, date, importance, project) {
+function CreateTask(title, description, date, importance, project, id) {
 
     return {
         title: title,
         description: description,
         date: new Date (date),
         importance: importance,
-        project: project
+        project: project,
+        id: id
     }
 }
 
@@ -45,10 +39,12 @@ function CreateTaskCollection() {
     const collectionOfTasks = [];
     const collectionOfProjects = [];
     let today = new Date();
+    let taskId = 0;
 
 
     const addTask = (title, description, date, importance, project) => {
-        let task = CreateTask(title, description, date, importance, project);
+        let task = CreateTask(title, description, date, importance, project, taskId);
+        taskId++;
         collectionOfTasks.push(task);
         collectionOfTasks.sort((a, b) => a.date - b.date);
         return;
@@ -135,25 +131,24 @@ function createScreenRenderer () {
         const checked = (task.importance ? "checked" : "")
         let taskElement = `                
         <div id="task${number}" class="task">
-        <label class="checkbox" for="checkboxMain1">
-            <input class="main_checkbox" id="checkboxMain1" type="checkbox">
+        <label class="checkbox" for="checkboxMain${number}">
+            <input class="main_checkbox" id="checkboxMain${number}" type="checkbox">
             <span class="control"></span>
         </label>
         <div class="description">
             <h4>${task.title}</h4>
             <p>${task.description}</p>
         </div>
-        <p class="date">${task.date}</p>
-        <label class="favorite" for="checkboxFav1">
-            <input class="fav_checkbox" id="checkboxFav1" type="checkbox" ${checked}>
+        <p class="date">${GBdate.format(task.date)}</p>
+        <label class="favorite" for="checkboxFav${number}">
+            <input class="fav_checkbox" id="checkboxFav${number}" type="checkbox" ${checked}>
             <span class="material-icons-outlined"></span>
         </label>
         <div class="menuHolder">
-            <button class="modify_button" id="buttonModify1">
-                <!-- <input class="modify_button" id="buttonModify1" type="button"> -->
+            <button class="modify_button" id="buttonModify${number}">
                 <span class="material-icons-outlined">more_vert</span>
             </button>
-            <menu class="emergingMenu hidden" id="taskMenu1">
+            <menu class="emergingMenu hidden" id="taskMenu${number}">
                 <li><button>Edit</button></li>
                 <li><button>Delete</button></li>
             </menu>
@@ -162,8 +157,32 @@ function createScreenRenderer () {
         return taskElement
     }
 
+    function renderTasks (tasks) {
+        for (let n in tasks) {
+            tasksScreen.innerHTML+=generateTaskElement(tasks[n], tasks[n].id);
+        }
+        for (let n in tasks) {
+            initializeTask(tasks[n].id);
+        }
+    }
+
+    function initializeTask (number) {
+        let taskMenu = document.querySelector("#taskMenu"+number);
+        let bodyElement = document.querySelector("body");
+
+        bodyElement.addEventListener("click", (e) => {
+
+            if (!e.target.closest("#buttonModify"+number) || !taskMenu.classList.contains("hidden")) {
+                taskMenu.classList.add("hidden");
+            } else {
+                taskMenu.classList.remove("hidden");
+            }
+        })
+    return
+    }
+
     return {
-        generateTaskElement
+        renderTasks
     }
 }
 
@@ -172,12 +191,11 @@ let taskCollection = CreateTaskCollection();
 
 taskCollection.addProject("Daily Tasks");
 taskCollection.addProject("Global Tasks");
-taskCollection.addProject("Global Tasks");
 
 
 taskCollection.addTask("Wash dishes", "Wash all the dishes at your home", "2023-03-21", false, taskCollection.returnProjectsAll()[0]);
 taskCollection.addTask("Fix Bike", "The tire must be changed", "2023-03-25", true, taskCollection.returnProjectsAll()[0]);
-taskCollection.addTask("Finish the Odin project", "The last project is left", "2023-09-19", true, taskCollection.returnProjectsAll()[1]);
+taskCollection.addTask("Finish the Odin project", "The last project is left", "2023-09-19", true, taskCollection.returnProjectsAll()[0]);
 taskCollection.addTask("Get a job", "Get a job as a Web Developer", "2023-03-23", true, taskCollection.returnProjectsAll()[1]);
 taskCollection.addTask("Build a house", "Find a suitable location and for the good price", "2030-03-20", false, taskCollection.returnProjectsAll()[1]);
 
@@ -185,7 +203,6 @@ taskCollection.addTask("Build a house", "Find a suitable location and for the go
 // console.log(taskCollection.returnTasksProject("Daily Tasks"))
 
 let screenRenderer = createScreenRenderer();
-0
 // console.log(taskCollection.returnTasksProject("Daily Tasks")[0])
 
-console.log(screenRenderer.generateTaskElement(taskCollection.returnTasksProject("Daily Tasks")[0], 1));
+screenRenderer.renderTasks(taskCollection.returnTasksNextWeek())
