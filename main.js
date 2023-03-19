@@ -31,7 +31,15 @@ function CreateTask(title, description, date, importance, project, id) {
         date: new Date (date),
         importance: importance,
         project: project,
-        id: id
+        id: id,
+        completion: false
+    }
+}
+
+function CreateProject(title, id) {
+    return {
+        title: title,
+        id: id,
     }
 }
 
@@ -40,12 +48,12 @@ function CreateTaskCollection() {
     const collectionOfProjects = [];
     let today = new Date();
     let taskId = 0;
+    let projectId = 0;
 
     const returnTaskById = (taskId) => {
         let task = collectionOfTasks.find(object => {
-            return object.id === taskId;
+            return object.id == taskId;
         })
-        // console.log(index)
         return task;
     }
 
@@ -58,10 +66,14 @@ function CreateTaskCollection() {
     }
 
     const addProject = (projectName) => {
-        if (!collectionOfProjects.includes(projectName)) {
-            collectionOfProjects.push(projectName);
+        let similiarProject = collectionOfProjects.find(object => {
+            return object.title == projectName;
+        })
+        if (!similiarProject) {
+            let newProject = CreateProject(projectName, projectId);
+            projectId++;
+            collectionOfProjects.push(newProject);
         }
-        // else console.log("No!")
         return;
     }
 
@@ -134,7 +146,8 @@ function CreateTaskCollection() {
 
 function createScreenRenderer () {
     const tasksScreen = document.querySelector("#tasks");
-
+    const projectScreen = document.querySelector("#projectList");
+    console.log(taskCollection.returnTaskById(3));
     function generateTaskElement(task, number) {
         const checked = (task.importance ? "checked" : "")
         let taskElement = `                
@@ -161,13 +174,37 @@ function createScreenRenderer () {
                 <li><button>Delete</button></li>
             </menu>
         </div>
-        </div>`
+        </div>
+        `
+        return taskElement
+    }
+
+    function generateProjectElement(project, number) {
+        let projectElement = `                
+        <li>
+        <a href="#"><span class="material-symbols-outlined">launch</span>${project}</a>
+        <button id="buttonProjectMenu1" class="menu_modify_button"><span class="material-symbols-outlined">more_horiz</span></button>
+        <menu class="emergingMenu moved hidden" id="projectMenu1">
+            <li><button>Rename</button></li>
+            <li><button>Delete</button></li>
+        </menu>
+    </li>
+    `
         return taskElement
     }
 
     function renderTasks (tasks) {
         for (let n in tasks) {
             tasksScreen.innerHTML+=generateTaskElement(tasks[n], tasks[n].id);
+        }
+        for (let n in tasks) {
+            initializeTask(tasks[n].id);
+        }
+    }
+
+    function renderProjects (projects) {
+        for (let n in tasks) {
+            tasksScreen.innerHTML+=generateProjectElement(tasks[n], tasks[n].id);
         }
         for (let n in tasks) {
             initializeTask(tasks[n].id);
@@ -191,7 +228,14 @@ function createScreenRenderer () {
             if (e.currentTarget.checked) taskCollection.returnTaskById(number).importance = true;
             else taskCollection.returnTaskById(number).importance = false;
         })
-    return
+
+        const completionCheckbox = document.querySelector("#checkboxMain"+number);
+        if (taskCollection.returnTaskById(number).completion == true) completionCheckbox.checked=true;
+        completionCheckbox.addEventListener("change", (e) => {
+            if (e.currentTarget.checked) taskCollection.returnTaskById(number).completion = true;
+            else taskCollection.returnTaskById(number).completion = false;
+        })
+        return
     }
 
     return {
@@ -224,4 +268,12 @@ screenRenderer.renderTasks(taskCollection.returnTasksNextWeek())
 // taskCollection.returnTaskById(1).title = "111111123312";
 // console.log(taskCollection.returnTaskById(1));
 
-console.log(taskCollection.returnTaskById(1));
+// console.log(taskCollection.returnTaskById(1));
+
+console.log(taskCollection.returnProjectsAll());
+
+taskCollection.addProject("2")
+taskCollection.addProject("123")
+taskCollection.addProject("2")
+
+console.log(taskCollection.returnProjectsAll());
