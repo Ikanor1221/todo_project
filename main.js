@@ -1,19 +1,5 @@
 const GBdate = new Intl.DateTimeFormat("en-GB", {});
 
-let menuModify = document.querySelector("#buttonProjectMenu1");
-let projectMenu = document.querySelector("#projectMenu1");
-
-let bodyElement = document.querySelector("body");
-
-bodyElement.addEventListener("click", (e) => {
-
-    if (!e.target.closest("#buttonProjectMenu1") || !projectMenu.classList.contains("hidden")) {
-        projectMenu.classList.add("hidden");
-    }  else {
-        projectMenu.classList.remove("hidden");
-    }
-})
-
 const menuControl = document.querySelector("#menu_control");
 const mainMenu = document.querySelector("#menu_main_bar");
 const mainScreen = document.querySelector("#sorting");
@@ -55,6 +41,14 @@ function CreateTaskCollection() {
             return object.id == taskId;
         })
         return task;
+    }
+
+
+    const returnProjectById = (projectId) => {
+        let project = collectionOfProjects.find(object => {
+            return object.id == projectId;
+        })
+        return project;
     }
 
     const addTask = (title, description, date, importance, project) => {
@@ -140,14 +134,15 @@ function CreateTaskCollection() {
         returnTasksNextWeek,
         returnTasksImportant,
         returnTasksProject,
-        returnTaskById
+        returnTaskById,
+        returnProjectById
     }
 }
 
 function createScreenRenderer () {
     const tasksScreen = document.querySelector("#tasks");
     const projectScreen = document.querySelector("#projectList");
-    console.log(taskCollection.returnTaskById(3));
+    // console.log(taskCollection.returnTaskById(3));
     function generateTaskElement(task, number) {
         const checked = (task.importance ? "checked" : "")
         let taskElement = `                
@@ -182,15 +177,15 @@ function createScreenRenderer () {
     function generateProjectElement(project, number) {
         let projectElement = `                
         <li>
-        <a href="#"><span class="material-symbols-outlined">launch</span>${project}</a>
-        <button id="buttonProjectMenu1" class="menu_modify_button"><span class="material-symbols-outlined">more_horiz</span></button>
-        <menu class="emergingMenu moved hidden" id="projectMenu1">
+        <a href="#"><span class="material-symbols-outlined">launch</span>${project.title}</a>
+        <button id="buttonProjectMenu${number}" class="menu_modify_button"><span class="material-symbols-outlined">more_horiz</span></button>
+        <menu class="emergingMenu moved hidden" id="projectMenu${number}">
             <li><button>Rename</button></li>
             <li><button>Delete</button></li>
         </menu>
     </li>
     `
-        return taskElement
+        return projectElement
     }
 
     function renderTasks (tasks) {
@@ -203,11 +198,11 @@ function createScreenRenderer () {
     }
 
     function renderProjects (projects) {
-        for (let n in tasks) {
-            tasksScreen.innerHTML+=generateProjectElement(tasks[n], tasks[n].id);
+        for (let n in projects) {
+            projectScreen.innerHTML+=generateProjectElement(projects[n], projects[n].id);
         }
-        for (let n in tasks) {
-            initializeTask(tasks[n].id);
+        for (let n in projects) {
+            initializeProject(projects[n].id);
         }
     }
 
@@ -236,10 +231,26 @@ function createScreenRenderer () {
             else taskCollection.returnTaskById(number).completion = false;
         })
         return
-    }
+    }               
+
+    function initializeProject (number) {;
+        const projectMenu = document.querySelector("#projectMenu"+number);
+        const bodyElement = document.querySelector("body");
+
+        bodyElement.addEventListener("click", (e) => {
+
+            if (!e.target.closest("#buttonProjectMenu"+number) || !projectMenu.classList.contains("hidden")) {
+                projectMenu.classList.add("hidden");
+            }  else {
+                projectMenu.classList.remove("hidden");
+            }
+        })
+        return
+    }               
 
     return {
-        renderTasks
+        renderTasks,
+        renderProjects
     }
 }
 
@@ -256,24 +267,16 @@ taskCollection.addTask("Finish the Odin project", "The last project is left", "2
 taskCollection.addTask("Get a job", "Get a job as a Web Developer", "2023-03-23", true, taskCollection.returnProjectsAll()[1]);
 taskCollection.addTask("Build a house", "Find a suitable location and for the good price", "2030-03-20", false, taskCollection.returnProjectsAll()[1]);
 
-
-// console.log(taskCollection.returnTasksProject("Daily Tasks"))
-
 let screenRenderer = createScreenRenderer();
-// console.log(taskCollection.returnTasksProject("Daily Tasks")[0])
 
 screenRenderer.renderTasks(taskCollection.returnTasksNextWeek())
 
-// console.log(taskCollection.returnTaskById(1));
-// taskCollection.returnTaskById(1).title = "111111123312";
-// console.log(taskCollection.returnTaskById(1));
-
-// console.log(taskCollection.returnTaskById(1));
-
-console.log(taskCollection.returnProjectsAll());
+// console.log(taskCollection.returnProjectsAll());
 
 taskCollection.addProject("2")
 taskCollection.addProject("123")
 taskCollection.addProject("2")
 
-console.log(taskCollection.returnProjectsAll());
+screenRenderer.renderProjects(taskCollection.returnProjectsAll())
+
+// console.log(taskCollection.returnProjectById(1));
