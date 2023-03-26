@@ -363,6 +363,19 @@
     grid-template-columns: auto;
   }
 
+  .addition_button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    border-radius: 5px;
+  }
+
+  .addition_button:hover {
+    background-color: var(--bgColorHover)
+  }
+
 
   @media (max-width: 600px) {
 

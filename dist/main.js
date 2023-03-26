@@ -144,6 +144,7 @@ function createScreenRenderer (taskCollection) {
     const tasksScreen = document.querySelector("#tasks");
     const projectScreen = document.querySelector("#projectList");
     let selectedTab = document.querySelector("#all_tasks_tab");
+
     function generateTaskElement(task, number) {
         const checked = (task.importance ? "checked" : "")
         let taskElement = `                
@@ -189,6 +190,11 @@ function createScreenRenderer (taskCollection) {
         return projectElement
     }
 
+    function generateAddButton() {
+        let addButton = `<button class="addition_button" id="add_task"><span class="material-symbols-outlined">add_circle</span> Add Task</button>`;
+        return addButton
+    }
+
     function renderTasks (tasks) {
         tasksScreen.innerHTML = "";
         for (let n in tasks) {
@@ -197,6 +203,8 @@ function createScreenRenderer (taskCollection) {
         for (let n in tasks) {
             initializeTask(tasks[n].id);
         }
+
+        tasksScreen.innerHTML+=generateAddButton();
     }
 
     function renderProjects (projects) {
@@ -206,6 +214,7 @@ function createScreenRenderer (taskCollection) {
         for (let n in projects) {
             initializeProject(projects[n].id);
         }
+        
     }
 
     function initializeTask (number) {
@@ -311,13 +320,9 @@ let screenRenderer = createScreenRenderer(taskCollection);
 
 screenRenderer.renderTasks(taskCollection.returnTasksAll())
 
-// console.log(taskCollection.returnProjectsAll());
-
 taskCollection.addProject("2")
 taskCollection.addProject("123")
 taskCollection.addProject("2")
 
 screenRenderer.renderProjects(taskCollection.returnProjectsAll())
 screenRenderer.initializeTabs();
-
-// console.log(taskCollection.returnProjectById(1));
