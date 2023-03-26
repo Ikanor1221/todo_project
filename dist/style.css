@@ -144,7 +144,7 @@
     background-color: var(--bgColorHover);
   }
 
-  .menu_main_bar a.selected {
+  .selected {
     background-color: lightgreen;
     border-left: 5px solid green;
   }
