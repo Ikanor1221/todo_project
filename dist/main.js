@@ -139,10 +139,10 @@ function CreateTaskCollection() {
     }
 }
 
-function createScreenRenderer () {
+function createScreenRenderer (taskCollection) {
     const tasksScreen = document.querySelector("#tasks");
     const projectScreen = document.querySelector("#projectList");
-    // console.log(taskCollection.returnTaskById(3));
+    let selectedTab = document.querySelector("#all_tasks_tab");
     function generateTaskElement(task, number) {
         const checked = (task.importance ? "checked" : "")
         let taskElement = `                
@@ -189,6 +189,7 @@ function createScreenRenderer () {
     }
 
     function renderTasks (tasks) {
+        tasksScreen.innerHTML = "";
         for (let n in tasks) {
             tasksScreen.innerHTML+=generateTaskElement(tasks[n], tasks[n].id);
         }
@@ -248,11 +249,37 @@ function createScreenRenderer () {
         return
     }               
 
+    function initializeTabs () {
+        const allTasksTab = document.querySelector("#all_tasks_tab");
+        const todayTasksTab = document.querySelector("#today_tab");
+        const nextWeekTasksTab = document.querySelector("#next_week_tab");
+        const importantTasksTab = document.querySelector("#important_tab");
+        const tabsCollection = [allTasksTab, todayTasksTab, nextWeekTasksTab, importantTasksTab];
+
+        tabsCollection.forEach(tab => {
+            tab.addEventListener('click', event => {
+                tabsCollection.forEach(tab => {
+                    tab.classList.remove("selected");
+                })
+                tab.classList.add("selected");
+                this.selectedTab = tab;
+                if (this.selectedTab == allTasksTab) this.renderTasks(taskCollection.returnTasksAll());
+                if (this.selectedTab == todayTasksTab) this.renderTasks(taskCollection.returnTasksToday());
+                if (this.selectedTab == nextWeekTasksTab) this.renderTasks(taskCollection.returnTasksNextWeek());
+                if (this.selectedTab == importantTasksTab) this.renderTasks(taskCollection.returnTasksImportant());
+            })
+          })
+        return
+    }
+
     return {
         renderTasks,
-        renderProjects
+        renderProjects,
+        initializeTabs,
+        selectedTab: selectedTab
     }
 }
+
 
 
 let taskCollection = CreateTaskCollection();
@@ -267,9 +294,9 @@ taskCollection.addTask("Finish the Odin project", "The last project is left", "2
 taskCollection.addTask("Get a job", "Get a job as a Web Developer", "2023-03-23", true, taskCollection.returnProjectsAll()[1]);
 taskCollection.addTask("Build a house", "Find a suitable location and for the good price", "2030-03-20", false, taskCollection.returnProjectsAll()[1]);
 
-let screenRenderer = createScreenRenderer();
+let screenRenderer = createScreenRenderer(taskCollection);
 
-screenRenderer.renderTasks(taskCollection.returnTasksNextWeek())
+screenRenderer.renderTasks(taskCollection.returnTasksAll())
 
 // console.log(taskCollection.returnProjectsAll());
 
@@ -278,5 +305,6 @@ taskCollection.addProject("123")
 taskCollection.addProject("2")
 
 screenRenderer.renderProjects(taskCollection.returnProjectsAll())
+screenRenderer.initializeTabs();
 
 // console.log(taskCollection.returnProjectById(1));
