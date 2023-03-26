@@ -92,11 +92,12 @@ function CreateTaskCollection() {
 
     const returnTasksNextWeek = () => {
         let nextWeekDate = new Date();
+        let today = new Date();
         nextWeekDate.setDate(today.getDate() + 7);
         const collectionOfTasksNextWeek = [];
         for (let task in collectionOfTasks)
             {
-                if  (collectionOfTasks[task].date.getTime() <= nextWeekDate.getTime()) {
+                if  (collectionOfTasks[task].date.getTime() <= nextWeekDate.getTime() & collectionOfTasks[task].date.getTime() >= today.getTime()) {
                     collectionOfTasksNextWeek.push(collectionOfTasks[task]);
                 }
             }
@@ -177,7 +178,7 @@ function createScreenRenderer (taskCollection) {
     function generateProjectElement(project, number) {
         let projectElement = `                
         <li>
-        <a href="#"><span class="material-symbols-outlined">launch</span>${project.title}</a>
+        <a id="project${number}" class="groupingTab" href="#"><span class="material-symbols-outlined">launch</span>${project.title}</a>
         <button id="buttonProjectMenu${number}" class="menu_modify_button"><span class="material-symbols-outlined">more_horiz</span></button>
         <menu class="emergingMenu moved hidden" id="projectMenu${number}">
             <li><button>Rename</button></li>
@@ -236,15 +237,25 @@ function createScreenRenderer (taskCollection) {
 
     function initializeProject (number) {;
         const projectMenu = document.querySelector("#projectMenu"+number);
+        const projectTab = document.querySelector("#project"+number);
         const bodyElement = document.querySelector("body");
 
         bodyElement.addEventListener("click", (e) => {
-
             if (!e.target.closest("#buttonProjectMenu"+number) || !projectMenu.classList.contains("hidden")) {
                 projectMenu.classList.add("hidden");
             }  else {
                 projectMenu.classList.remove("hidden");
             }
+        })
+
+        projectTab.addEventListener('click', event => {
+            removeHighlightting();
+            projectTab.parentElement.classList.add("selected");
+            this.selectedTab = tab;
+            if (this.selectedTab == allTasksTab) this.renderTasks(taskCollection.returnTasksAll());
+            if (this.selectedTab == todayTasksTab) this.renderTasks(taskCollection.returnTasksToday());
+            if (this.selectedTab == nextWeekTasksTab) this.renderTasks(taskCollection.returnTasksNextWeek());
+            if (this.selectedTab == importantTasksTab) this.renderTasks(taskCollection.returnTasksImportant());
         })
         return
     }               
@@ -258,10 +269,8 @@ function createScreenRenderer (taskCollection) {
 
         tabsCollection.forEach(tab => {
             tab.addEventListener('click', event => {
-                tabsCollection.forEach(tab => {
-                    tab.classList.remove("selected");
-                })
-                tab.classList.add("selected");
+                removeHighlightting();
+                tab.parentElement.classList.add("selected");
                 this.selectedTab = tab;
                 if (this.selectedTab == allTasksTab) this.renderTasks(taskCollection.returnTasksAll());
                 if (this.selectedTab == todayTasksTab) this.renderTasks(taskCollection.returnTasksToday());
@@ -272,11 +281,18 @@ function createScreenRenderer (taskCollection) {
         return
     }
 
+    function removeHighlightting () {
+        const allTabs = document.querySelectorAll(".groupingTab");
+        allTabs.forEach(tab => {
+            tab.parentElement.classList.remove("selected");
+        })
+        return
+    }
+
     return {
         renderTasks,
         renderProjects,
-        initializeTabs,
-        selectedTab: selectedTab
+        initializeTabs
     }
 }
 
@@ -288,11 +304,11 @@ taskCollection.addProject("Daily Tasks");
 taskCollection.addProject("Global Tasks");
 
 
-taskCollection.addTask("Wash dishes", "Wash all the dishes at your home", "2023-03-21", false, taskCollection.returnProjectsAll()[0]);
-taskCollection.addTask("Fix Bike", "The tire must be changed", "2023-03-25", true, taskCollection.returnProjectsAll()[0]);
+taskCollection.addTask("Wash dishes", "Wash all the dishes at your home", "2023-03-26", false, taskCollection.returnProjectsAll()[0]);
+taskCollection.addTask("Fix Bike", "The tire must be changed", "2023-03-29", true, taskCollection.returnProjectsAll()[0]);
 taskCollection.addTask("Finish the Odin project", "The last project is left", "2023-09-19", true, taskCollection.returnProjectsAll()[0]);
-taskCollection.addTask("Get a job", "Get a job as a Web Developer", "2023-03-23", true, taskCollection.returnProjectsAll()[1]);
-taskCollection.addTask("Build a house", "Find a suitable location and for the good price", "2030-03-20", false, taskCollection.returnProjectsAll()[1]);
+taskCollection.addTask("Get a job", "Get a job as a Web Developer", "2023-03-28", true, taskCollection.returnProjectsAll()[1]);
+taskCollection.addTask("Build a house", "Find a suitable location and for the good price", "2030-04-20", false, taskCollection.returnProjectsAll()[1]);
 
 let screenRenderer = createScreenRenderer(taskCollection);
 
