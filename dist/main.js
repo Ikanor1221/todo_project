@@ -115,11 +115,11 @@ function CreateTaskCollection() {
         return collectionOfTasksImportant;
     }
 
-    const returnTasksProject = (projectName) => {
+    const returnTasksProject = (projectId) => {
         const collectionOfTasksProject= [];
         for (let task in collectionOfTasks)
             {
-                if  (collectionOfTasks[task].project == projectName) {
+                if  (collectionOfTasks[task].project.id == projectId) {
                     collectionOfTasksProject.push(collectionOfTasks[task]);
                 }
             }
@@ -251,11 +251,8 @@ function createScreenRenderer (taskCollection) {
         projectTab.addEventListener('click', event => {
             removeHighlightting();
             projectTab.parentElement.classList.add("selected");
-            this.selectedTab = tab;
-            if (this.selectedTab == allTasksTab) this.renderTasks(taskCollection.returnTasksAll());
-            if (this.selectedTab == todayTasksTab) this.renderTasks(taskCollection.returnTasksToday());
-            if (this.selectedTab == nextWeekTasksTab) this.renderTasks(taskCollection.returnTasksNextWeek());
-            if (this.selectedTab == importantTasksTab) this.renderTasks(taskCollection.returnTasksImportant());
+            this.selectedTab = projectTab;
+            renderTasks(taskCollection.returnTasksProject(projectTab.id.slice(7)));
         })
         return
     }               
@@ -272,10 +269,10 @@ function createScreenRenderer (taskCollection) {
                 removeHighlightting();
                 tab.parentElement.classList.add("selected");
                 this.selectedTab = tab;
-                if (this.selectedTab == allTasksTab) this.renderTasks(taskCollection.returnTasksAll());
-                if (this.selectedTab == todayTasksTab) this.renderTasks(taskCollection.returnTasksToday());
-                if (this.selectedTab == nextWeekTasksTab) this.renderTasks(taskCollection.returnTasksNextWeek());
-                if (this.selectedTab == importantTasksTab) this.renderTasks(taskCollection.returnTasksImportant());
+                if (this.selectedTab == allTasksTab) renderTasks(taskCollection.returnTasksAll());
+                if (this.selectedTab == todayTasksTab) renderTasks(taskCollection.returnTasksToday());
+                if (this.selectedTab == nextWeekTasksTab) renderTasks(taskCollection.returnTasksNextWeek());
+                if (this.selectedTab == importantTasksTab) renderTasks(taskCollection.returnTasksImportant());
             })
           })
         return
