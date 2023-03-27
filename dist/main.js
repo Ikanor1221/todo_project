@@ -190,10 +190,10 @@ function createScreenRenderer (taskCollection) {
         return projectElement
     }
 
-    function generateAddButton() {
-        let addButton = `<button class="addition_button" id="add_task"><span class="material-symbols-outlined">add_circle</span> Add Task</button>`;
-        return addButton
-    }
+    // function generateAddButton() {
+    //     let addButton = `<button class="addition_button" id="add_task"><span class="material-symbols-outlined">add_circle</span> Add Task</button>`;
+    //     return addButton
+    // }
 
     function renderTasks (tasks) {
         tasksScreen.innerHTML = "";
@@ -204,7 +204,7 @@ function createScreenRenderer (taskCollection) {
             initializeTask(tasks[n].id);
         }
 
-        tasksScreen.innerHTML+=generateAddButton();
+        // tasksScreen.innerHTML+=generateAddButton();
     }
 
     function renderProjects (projects) {

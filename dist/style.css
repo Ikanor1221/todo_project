@@ -5,6 +5,7 @@
     --bgColorHover: rgb(199, 195, 195);
     --textColor: #374958;
     --mainGreen: #2abd67;
+    --mainRed: #be0404;
   }
 
   li {
@@ -184,7 +185,7 @@
   main {
     padding: 40px;
     display: grid;
-    grid-template-rows: 100px auto;
+    grid-template-rows: 100px minmax(min-content, max-content) minmax(min-content, max-content) minmax(min-content, max-content);
     gap: 10px;
     max-width: 100%;
   }
@@ -370,12 +371,75 @@
     gap: 10px;
     font-size: 1.5rem;
     border-radius: 5px;
+    height: 60px;
   }
 
   .addition_button:hover {
     background-color: var(--bgColorHover)
   }
 
+  #newTaskForm {
+    background-color: var(--bgColor3);
+    padding: 20px;
+    border-radius: 5px;
+    display: grid;
+    grid-auto-flow: row;
+    gap: 2px;
+    padding-bottom: 20px;
+    transition: opacity 0.4s ease-in;
+  }
+
+  #newTaskForm.hidden_cell {
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    margin: 0px;
+    padding: 0px;
+  }
+
+  #newTaskForm > .no_margin {
+    margin: 0px;
+  }
+
+  .formButtons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .formButtons button {
+    height: 40px;
+    width: 80px;
+    border-radius: 5px;
+    color: var(--bgColor3);
+  }
+
+  #buttonFormAdd {
+    background-color: var(--mainGreen);
+    
+  }
+
+  #buttonFormCancel {
+    background-color: var(--mainRed);
+  }
+
+  #newTaskForm label, #newTaskForm button {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 10px;
+  }
+
+  #titleForm, #dateForm {
+    min-height: 2rem;
+    padding: 0.5rem;
+  }
+
+  #descriptionForm {
+    min-height: 5rem;
+    padding: 0.5rem;
+    resize: none;
+  }
 
   @media (max-width: 600px) {
 
@@ -398,6 +462,7 @@
       grid-template-rows: auto auto;
       grid-template-areas: "a b b b" ". c d e";
       grid-auto-flow: row;
+      justify-content: start;
     }
 
     .checkbox {
