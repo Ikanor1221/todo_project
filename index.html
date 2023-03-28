@@ -38,11 +38,12 @@
                 <h2>Projects</h2>
                 <menu class="menu_list" id="projectList">
                 </menu>
-                <form class="" id="newProjectForm" autocomplete="off">
-                    <input id="titleFormProject" type="text">
+                <form class="formObject no_padding" id="newProjectForm" autocomplete="off">
+                    <label for="titleFormProject">New project's name: </label>
+                    <input id="titleFormProject" class="basicField" type="text" required>
                     <div class="formButtons">
-                        <button id="buttonFormAdd">Add</button>
-                        <button id="buttonFormCancel">Cancel</button>
+                        <button class="buttonFormAdd" id="addProject">Add</button>
+                        <button class="buttonFormCancel" id="cancelProject">Cancel</button>
                     </div>
                 </form>
                 <button class="addition_button" id="add_project"><span class="material-symbols-outlined">add_circle</span>Add Project</button>
@@ -51,18 +52,18 @@
         <main>
             <h3>All Tasks</h3>
             <div id="tasks">
-                
+                <!-- Implement class styling for both forms so their manipulations is easier with JS -->
             </div>
-            <form class="hidden_cell" id="newTaskForm" autocomplete="off">
-                <label class="no_margin" for="titleForm">Title: </label>
-                <input id="titleForm" type="text">
-                <label for="descriptionForm">Description: </label>
-                <textarea id="descriptionForm"></textarea>
+            <form class="formObject" id="newTaskForm" autocomplete="off">
+                <label class="no_margin" for="titleTask">Title: </label>
+                <input class="basicField" id="titleTask" type="text" required>
+                <label for="descriptionTask">Description (optional): </label>
+                <textarea class="wideField" id="descriptionTask"></textarea>
                 <label for="dateForm">Date: </label>
-                <input id="dateForm" type="date">
+                <input class="basicField" id="dateForm" type="date" required>
                 <div class="formButtons">
-                    <button id="buttonFormAdd">Add</button>
-                    <button id="buttonFormCancel">Cancel</button>
+                    <button class="buttonFormAdd" id="addTask">Add</button>
+                    <button class="buttonFormCancel" id="cancelTask">Cancel</button>
                 </div>
             </form>
             <button class="addition_button" id="add_task"><span class="material-symbols-outlined">add_circle</span> Add Task</button>

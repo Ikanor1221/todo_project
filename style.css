@@ -378,7 +378,18 @@
     background-color: var(--bgColorHover)
   }
 
-  #newTaskForm {
+  /* #newTaskForm {
+    background-color: var(--bgColor3);
+    padding: 20px;
+    border-radius: 5px;
+    display: grid;
+    grid-auto-flow: row;
+    gap: 2px;
+    padding-bottom: 20px;
+    transition: opacity 0.4s ease-in;
+  } */
+
+  .formObject {
     background-color: var(--bgColor3);
     padding: 20px;
     border-radius: 5px;
@@ -389,7 +400,19 @@
     transition: opacity 0.4s ease-in;
   }
 
-  #newTaskForm.hidden_cell {
+  .formObject * {
+    font-size: 1rem;
+  }
+
+  /* #newTaskForm.hidden_cell {
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    margin: 0px;
+    padding: 0px;
+  } */
+
+  .formObject.hiddenObject {
     max-height: 0;
     opacity: 0;
     visibility: hidden;
@@ -397,8 +420,16 @@
     padding: 0px;
   }
 
-  #newTaskForm > .no_margin {
+  /* #newTaskForm > .no_margin {
     margin: 0px;
+  } */
+
+  .formObject > .no_margin {
+    margin: 0px;
+  }
+
+  .no_padding {
+    padding: 0px;
   }
 
   .formButtons {
@@ -415,27 +446,27 @@
     color: var(--bgColor3);
   }
 
-  #buttonFormAdd {
+  .buttonFormAdd {
     background-color: var(--mainGreen);
     
   }
 
-  #buttonFormCancel {
+  .buttonFormCancel {
     background-color: var(--mainRed);
   }
 
-  #newTaskForm label, #newTaskForm button {
+  .formObject label, .formObject button {
     font-size: 1rem;
     font-weight: 700;
     margin-top: 10px;
   }
 
-  #titleForm, #dateForm {
+  .basicField {
     min-height: 2rem;
     padding: 0.5rem;
   }
 
-  #descriptionForm {
+  .wideField {
     min-height: 5rem;
     padding: 0.5rem;
     resize: none;
