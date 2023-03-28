@@ -236,10 +236,20 @@ function createScreenRenderer (taskCollection) {
         })
 
         const completionCheckbox = document.querySelector("#checkboxMain"+number);
-        if (taskCollection.returnTaskById(number).completion == true) completionCheckbox.checked=true;
+        if (taskCollection.returnTaskById(number).completion == true) {
+            completionCheckbox.checked=true;
+            completionCheckbox.parentElement.parentElement.classList.add("taskCompleted");
+        }
+
         completionCheckbox.addEventListener("change", (e) => {
-            if (e.currentTarget.checked) taskCollection.returnTaskById(number).completion = true;
-            else taskCollection.returnTaskById(number).completion = false;
+            if (e.currentTarget.checked) {
+                completionCheckbox.parentElement.parentElement.classList.add("taskCompleted");
+                taskCollection.returnTaskById(number).completion = true;
+            }
+            else {
+                completionCheckbox.parentElement.parentElement.classList.remove("taskCompleted");
+                taskCollection.returnTaskById(number).completion = false;
+            }
         })
         return
     }               
