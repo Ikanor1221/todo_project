@@ -5,6 +5,7 @@
     --bgColorHover: rgb(199, 195, 195);
     --textColor: #374958;
     --mainGreen: #2abd67;
+    --greenCompleted: #b9f0d0;
     --mainRed: #be0404;
   }
 
@@ -217,7 +218,10 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-    /* position: relative; */
+  }
+
+  .taskCompleted {
+    background-color: var(--greenCompleted);
   }
 
   .description {
