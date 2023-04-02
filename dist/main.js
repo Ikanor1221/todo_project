@@ -230,6 +230,10 @@ function createScreenRenderer (taskCollection) {
         return taskForm
     }
 
+    function generateAddTaskButtonElement() {
+        return '<button class="addition_button" id="add_task"><span class="material-symbols-outlined">add_circle</span> Add Task</button>'
+    }
+
     function renderTasks (tasks) {
         tasksScreen.innerHTML = "";
         for (let n in tasks) {
@@ -238,20 +242,39 @@ function createScreenRenderer (taskCollection) {
         for (let n in tasks) {
             initializeTask(tasks[n].id);
         }
+
+        renderTaskAddButton();
+        
+    }
+
+    function renderTaskAddButton () {
         
         const allTasksTab = document.querySelector("#all_tasks_tab");
         const todayTasksTab = document.querySelector("#today_tab");
         const nextWeekTasksTab = document.querySelector("#next_week_tab");
         const importantTasksTab = document.querySelector("#important_tab");
+        
+        // const mainElement = document.querySelector("main");
 
-        const addTaskButton = document.querySelector("#add_task");
+        let addTaskButton = document.querySelector("#add_task");
+
 
         if (selectedTab == allTasksTab || selectedTab == todayTasksTab || selectedTab == nextWeekTasksTab || selectedTab == importantTasksTab) {
-            addTaskButton.classList.add("hidden");
+            if (addTaskButton) {
+                addTaskButton.parentElement.removeChild(addTaskButton);
+            }
         }
-        else  {
-            addTaskButton.classList.remove("hidden");
+        else if(!addTaskButton) {
+            console.log(generateAddTaskButtonElement())
+            let newNode = document.createRange().createContextualFragment(generateAddTaskButtonElement());
+            tasksScreen.after(newNode);
+
+            let addTaskButton = document.querySelector("#add_task");
+            addTaskButton.addEventListener("click", (e) => {
+            renderTaskForm();
+        })
         }
+
 
     }
 
@@ -265,6 +288,7 @@ function createScreenRenderer (taskCollection) {
     }
 
     function renderTaskForm (task) {
+
         let newNode = document.createRange().createContextualFragment(generateTaskForm(task));
         tasksScreen.after(newNode);
         initializeTaskForm(task);
@@ -443,6 +467,3 @@ taskCollection.addProject("2")
 
 screenRenderer.renderProjects(taskCollection.returnProjectsAll())
 screenRenderer.initializeTabs();
-
-// screenRenderer.renderTaskForm(taskCollection.returnTaskById(0));
-// screenRenderer.renderTaskForm();
