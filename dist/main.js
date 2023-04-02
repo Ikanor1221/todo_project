@@ -257,12 +257,16 @@ function createScreenRenderer (taskCollection) {
         // const mainElement = document.querySelector("main");
 
         let addTaskButton = document.querySelector("#add_task");
+        let taskForm = document.querySelector("#newTaskForm");
 
 
         if (selectedTab == allTasksTab || selectedTab == todayTasksTab || selectedTab == nextWeekTasksTab || selectedTab == importantTasksTab) {
             if (addTaskButton) {
                 addTaskButton.parentElement.removeChild(addTaskButton);
             }
+        }
+        else if (taskForm) {
+
         }
         else if(!addTaskButton) {
             console.log(generateAddTaskButtonElement())
@@ -272,6 +276,10 @@ function createScreenRenderer (taskCollection) {
             let addTaskButton = document.querySelector("#add_task");
             addTaskButton.addEventListener("click", (e) => {
             renderTaskForm();
+
+            // let taskForm = document.querySelector("#newTaskForm");
+            addTaskButton.parentNode.removeChild(addTaskButton);
+
         })
         }
 
@@ -381,9 +389,11 @@ function createScreenRenderer (taskCollection) {
                 task.title = formTitle.value;
                 task.description = formDescription.value;
                 task.date =  new Date(formDate.value);
+                closeTaskForm();
             }
             else {
                 taskCollection.addTask(formTitle.value, formDescription.value, formDate.value, false, projectId);
+                closeTaskForm();
             }
             let projectTab = document.querySelector("#project"+projectId);
             removeHighlightting();
@@ -394,6 +404,7 @@ function createScreenRenderer (taskCollection) {
 
         cancelButton.addEventListener("click", (e) => {
             closeTaskForm();
+            renderTaskAddButton();
         })
 
         return
