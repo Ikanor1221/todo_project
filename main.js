@@ -190,10 +190,23 @@ function createScreenRenderer (taskCollection) {
         return projectElement
     }
 
-    // function generateAddButton() {
-    //     let addButton = `<button class="addition_button" id="add_task"><span class="material-symbols-outlined">add_circle</span> Add Task</button>`;
-    //     return addButton
-    // }
+    function generateTaskForm(task) {
+        let taskForm = `                
+        <form class="formObject" id="newTaskForm" autocomplete="off">
+            <label class="no_margin" for="titleTask">Title: </label>
+            <input class="basicField" id="titleTask" type="text" value="${task.title}" required>
+            <label for="descriptionTask">Description (optional): </label>
+            <textarea class="wideField" id="descriptionTask">${task.description}</textarea>
+            <label for="dateForm">Date: </label>
+            <input class="basicField" id="dateForm" type="date" value="${task.date}" required>
+            <div class="formButtons">
+                <button class="buttonFormAdd" id="addTask">Add</button>
+               <button class="buttonFormCancel" id="cancelTask">Cancel</button>
+            </div>
+        </form>
+    `
+        return taskForm
+    }
 
     function renderTasks (tasks) {
         tasksScreen.innerHTML = "";
@@ -204,7 +217,6 @@ function createScreenRenderer (taskCollection) {
             initializeTask(tasks[n].id);
         }
 
-        // tasksScreen.innerHTML+=generateAddButton();
     }
 
     function renderProjects (projects) {
@@ -214,7 +226,16 @@ function createScreenRenderer (taskCollection) {
         for (let n in projects) {
             initializeProject(projects[n].id);
         }
-        
+    }
+
+    function renderTaskForm (task) {
+        let newNode = document.createRange().createContextualFragment(generateTaskForm(task));
+        tasksScreen.after(newNode);
+
+        // for (let n in tasks) {
+        //     initializeTask(tasks[n].id);
+        // }
+
     }
 
     function initializeTask (number) {
@@ -308,7 +329,8 @@ function createScreenRenderer (taskCollection) {
     return {
         renderTasks,
         renderProjects,
-        initializeTabs
+        initializeTabs,
+        renderTaskForm
     }
 }
 
@@ -336,3 +358,5 @@ taskCollection.addProject("2")
 
 screenRenderer.renderProjects(taskCollection.returnProjectsAll())
 screenRenderer.initializeTabs();
+
+screenRenderer.renderTaskForm(taskCollection.returnTaskById(0))
