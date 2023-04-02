@@ -230,6 +230,22 @@ function createScreenRenderer (taskCollection) {
         return taskForm
     }
 
+    function generateProjectForm(projectName) {
+        if (!projectName) projectName = " ";
+        let projectForm = `                
+        <form class="formObject no_padding" id="newProjectForm" autocomplete="off">
+        <label for="titleFormProject">New project's name: </label>
+        <input id="titleFormProject" class="basicField" type="text" value="${projectName}" required>
+        <div class="formButtons">
+            <button class="buttonFormAdd" id="addProject">Add</button>
+            <button class="buttonFormCancel" id="cancelProject">Cancel</button>
+        </div>
+    </form>
+     `
+
+        return projectForm
+    }
+
     function generateAddTaskButtonElement() {
         return '<button class="addition_button" id="add_task"><span class="material-symbols-outlined">add_circle</span> Add Task</button>'
     }
@@ -245,6 +261,15 @@ function createScreenRenderer (taskCollection) {
 
         renderTaskAddButton();
         
+    }
+
+    function renderProjectForm (projectName) {
+
+        let newNode = document.createRange().createContextualFragment(generateProjectForm(projectName));
+        let projectList = document.querySelector("#projectList");
+
+        projectList.after(newNode);
+        // initializeProjectForm(task);
     }
 
     function renderTaskAddButton () {
@@ -450,7 +475,8 @@ function createScreenRenderer (taskCollection) {
         renderTasks,
         renderProjects,
         initializeTabs,
-        renderTaskForm
+        renderTaskForm,
+        renderProjectForm
     }
 }
 
@@ -478,3 +504,5 @@ taskCollection.addProject("2")
 
 screenRenderer.renderProjects(taskCollection.returnProjectsAll())
 screenRenderer.initializeTabs();
+
+screenRenderer.renderProjectForm()
