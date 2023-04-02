@@ -238,6 +238,20 @@ function createScreenRenderer (taskCollection) {
         for (let n in tasks) {
             initializeTask(tasks[n].id);
         }
+        
+        const allTasksTab = document.querySelector("#all_tasks_tab");
+        const todayTasksTab = document.querySelector("#today_tab");
+        const nextWeekTasksTab = document.querySelector("#next_week_tab");
+        const importantTasksTab = document.querySelector("#important_tab");
+
+        const addTaskButton = document.querySelector("#add_task");
+
+        if (selectedTab == allTasksTab || selectedTab == todayTasksTab || selectedTab == nextWeekTasksTab || selectedTab == importantTasksTab) {
+            addTaskButton.classList.add("hidden");
+        }
+        else  {
+            addTaskButton.classList.remove("hidden");
+        }
 
     }
 
@@ -253,9 +267,7 @@ function createScreenRenderer (taskCollection) {
     function renderTaskForm (task) {
         let newNode = document.createRange().createContextualFragment(generateTaskForm(task));
         tasksScreen.after(newNode);
-
         initializeTaskForm(task);
-
     }
 
     function initializeTask (number) {
@@ -311,7 +323,9 @@ function createScreenRenderer (taskCollection) {
         projectTab.addEventListener('click', event => {
             removeHighlightting();
             projectTab.parentElement.classList.add("selected");
-            this.selectedTab = projectTab;
+            // console.log(selectedTab)
+            selectedTab = projectTab;
+
             renderTasks(taskCollection.returnTasksProject(projectTab.id.slice(7)));
             taskCollection.selectedProjectId = Number((projectTab.id.slice(7)));
         })
@@ -335,9 +349,6 @@ function createScreenRenderer (taskCollection) {
         })
 
         addButton.addEventListener("click", (e) => {
-            // console.log(Boolean(formDate.value))
-            // console.log(Boolean(formTitle.value))
-            // console.log(!(Boolean(formTitle.value) & Boolean(formDate.value)))
             if (!(Boolean(formTitle.value) & Boolean(formDate.value))) {
                 return
             }
@@ -353,7 +364,7 @@ function createScreenRenderer (taskCollection) {
             let projectTab = document.querySelector("#project"+projectId);
             removeHighlightting();
             projectTab.parentElement.classList.add("selected");
-            this.selectedTab = projectTab;
+            selectedTab = projectTab;
             renderTasks(taskCollection.returnTasksProject(projectId));
         })
 
@@ -381,11 +392,12 @@ function createScreenRenderer (taskCollection) {
             tab.addEventListener('click', event => {
                 removeHighlightting();
                 tab.parentElement.classList.add("selected");
-                this.selectedTab = tab;
-                if (this.selectedTab == allTasksTab) renderTasks(taskCollection.returnTasksAll());
-                if (this.selectedTab == todayTasksTab) renderTasks(taskCollection.returnTasksToday());
-                if (this.selectedTab == nextWeekTasksTab) renderTasks(taskCollection.returnTasksNextWeek());
-                if (this.selectedTab == importantTasksTab) renderTasks(taskCollection.returnTasksImportant());
+                // console.log(selectedTab)
+                selectedTab = tab;
+                if (selectedTab == allTasksTab) renderTasks(taskCollection.returnTasksAll());
+                if (selectedTab == todayTasksTab) renderTasks(taskCollection.returnTasksToday());
+                if (selectedTab == nextWeekTasksTab) renderTasks(taskCollection.returnTasksNextWeek());
+                if (selectedTab == importantTasksTab) renderTasks(taskCollection.returnTasksImportant());
             })
           })
         return
