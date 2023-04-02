@@ -191,20 +191,40 @@ function createScreenRenderer (taskCollection) {
     }
 
     function generateTaskForm(task) {
-        let taskForm = `                
-        <form class="formObject" id="newTaskForm" autocomplete="off">
-            <label class="no_margin" for="titleTask">Title: </label>
-            <input class="basicField" id="titleTask" type="text" value="${task.title}" required>
-            <label for="descriptionTask">Description (optional): </label>
-            <textarea class="wideField" id="descriptionTask">${task.description}</textarea>
-            <label for="dateForm">Date: </label>
-            <input class="basicField" id="dateForm" type="date" value="${task.date.toISOString().substr(0, 10)}" required>
-            <div class="formButtons">
-                <button class="buttonFormAdd" id="addTask">Add</button>
-               <button class="buttonFormCancel" id="cancelTask">Cancel</button>
-            </div>
-        </form>
-    `
+        let taskForm
+        if (task) {
+            taskForm = `                
+            <form class="formObject" id="newTaskForm" autocomplete="off">
+                <label class="no_margin" for="titleTask">Title: </label>
+                <input class="basicField" id="titleTask" type="text" value="${task.title}" required>
+                <label for="descriptionTask">Description (optional): </label>
+                <textarea class="wideField" id="descriptionTask">${task.description}</textarea>
+                <label for="dateForm">Date: </label>
+                <input class="basicField" id="dateForm" type="date" value="${task.date.toISOString().substr(0, 10)}" required>
+                <div class="formButtons">
+                    <button class="buttonFormAdd" id="addTask">Add</button>
+                   <button class="buttonFormCancel" id="cancelTask">Cancel</button>
+                </div>
+            </form>
+        `
+        }
+        else {
+            taskForm = `                
+            <form class="formObject" id="newTaskForm" autocomplete="off">
+                <label class="no_margin" for="titleTask">Title: </label>
+                <input class="basicField" id="titleTask" type="text" value="" required>
+                <label for="descriptionTask">Description (optional): </label>
+                <textarea class="wideField" id="descriptionTask"></textarea>
+                <label for="dateForm">Date: </label>
+                <input class="basicField" id="dateForm" type="date" value="" required>
+                <div class="formButtons">
+                    <button class="buttonFormAdd" id="addTask">Add</button>
+                   <button class="buttonFormCancel" id="cancelTask">Cancel</button>
+                </div>
+            </form>
+        `
+        }
+
         return taskForm
     }
 
@@ -232,7 +252,7 @@ function createScreenRenderer (taskCollection) {
         let newNode = document.createRange().createContextualFragment(generateTaskForm(task));
         tasksScreen.after(newNode);
 
-        initializeTaskForm();
+        initializeTaskForm(task);
 
     }
 
@@ -295,21 +315,34 @@ function createScreenRenderer (taskCollection) {
         return
     }
     
-    function initializeTaskForm () {;
+    function initializeTaskForm (task) {
+
         const taskForm = document.querySelector("#newTaskForm");
+
         const formTitle = document.querySelector("#titleTask");
         const formDescription = document.querySelector("#descriptionTask");
         const formDate = document.querySelector("#dateForm");
+
         const addButton = document.querySelector("#addTask");
         const cancelButton = document.querySelector("#cancelTask");
 
         taskForm.addEventListener("submit", (e) => {
             e.preventDefault();
-            console.log("Submit!")
         })
-        
+
+
+        cancelButton.addEventListener("click", (e) => {
+            closeTaskForm();
+        })
+
         return
     }        
+
+    function closeTaskForm () {
+        let taskForm = document.querySelector("#newTaskForm");
+        taskForm.parentNode.removeChild(taskForm);
+        return
+    }
 
     function initializeTabs () {
         const allTasksTab = document.querySelector("#all_tasks_tab");
