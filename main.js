@@ -198,7 +198,7 @@ function createScreenRenderer (taskCollection) {
             <label for="descriptionTask">Description (optional): </label>
             <textarea class="wideField" id="descriptionTask">${task.description}</textarea>
             <label for="dateForm">Date: </label>
-            <input class="basicField" id="dateForm" type="date" value="${task.date}" required>
+            <input class="basicField" id="dateForm" type="date" value="${task.date.toISOString().substr(0, 10)}" required>
             <div class="formButtons">
                 <button class="buttonFormAdd" id="addTask">Add</button>
                <button class="buttonFormCancel" id="cancelTask">Cancel</button>
@@ -232,9 +232,7 @@ function createScreenRenderer (taskCollection) {
         let newNode = document.createRange().createContextualFragment(generateTaskForm(task));
         tasksScreen.after(newNode);
 
-        // for (let n in tasks) {
-        //     initializeTask(tasks[n].id);
-        // }
+        initializeTaskForm();
 
     }
 
@@ -295,7 +293,23 @@ function createScreenRenderer (taskCollection) {
             renderTasks(taskCollection.returnTasksProject(projectTab.id.slice(7)));
         })
         return
-    }               
+    }
+    
+    function initializeTaskForm () {;
+        const taskForm = document.querySelector("#newTaskForm");
+        const formTitle = document.querySelector("#titleTask");
+        const formDescription = document.querySelector("#descriptionTask");
+        const formDate = document.querySelector("#dateForm");
+        const addButton = document.querySelector("#addTask");
+        const cancelButton = document.querySelector("#cancelTask");
+
+        taskForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            console.log("Submit!")
+        })
+        
+        return
+    }        
 
     function initializeTabs () {
         const allTasksTab = document.querySelector("#all_tasks_tab");
