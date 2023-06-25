@@ -1,6 +1,6 @@
 const GBdate = new Intl.DateTimeFormat("en-GB", {});
 
-const menuControl = document.querySelector("#menu_control");
+const menuControl = document.querySelector("#menu_control");    //Find existingiinterface and make it dynamic
 const mainMenu = document.querySelector("#menu_main_bar");
 const mainScreen = document.querySelector("#sorting");
 
@@ -9,33 +9,35 @@ menuControl.addEventListener("click", (e) => {
     mainScreen.classList.toggle("grid_auto");
 })
 
-function CreateTask(title, description, date, importance, projectId, id) {
 
-    return {
-        title: title,
-        description: description,
-        date: new Date (date),
-        importance: importance,
-        projectId: projectId,
-        id: id,
-        completion: false
-    }
-}
 
-function CreateProject(title, id) {
-    return {
-        title: title,
-        id: id,
-    }
-}
-
-function CreateTaskCollection() {
+function Model() {
     const collectionOfTasks = [];
     const collectionOfProjects = [];
-    let selectedProjectId
+    // let selectedProjectId
     let today = new Date();
     let taskId = 0;
     let projectId = 0;
+
+    function CreateTask(title, description, date, importance, projectId, id) {
+
+        return {
+            title: title,
+            description: description,
+            date: new Date (date),
+            importance: importance,
+            projectId: projectId,
+            id: id,
+            completion: false
+        }
+    }
+    
+    function CreateProject(title, id) {
+        return {
+            title: title,
+            id: id,
+        }
+    }
 
     const returnTaskById = (taskId) => {
         let task = collectionOfTasks.find(object => {
@@ -43,7 +45,6 @@ function CreateTaskCollection() {
         })
         return task;
     }
-
 
     const returnProjectById = (projectId) => {
         let project = collectionOfProjects.find(object => {
@@ -138,15 +139,13 @@ function CreateTaskCollection() {
         returnTasksProject,
         returnTaskById,
         returnProjectById,
-        selectedProjectId
+        // selectedProjectId
     }
 }
 
-function createScreenRenderer (taskCollection) {
-    const tasksScreen = document.querySelector("#tasks");
-    const projectScreen = document.querySelector("#projectList");
-    let selectedTab = document.querySelector("#all_tasks_tab");
 
+function View() {
+    
     function generateTaskElement(task, number) {
         const checked = (task.importance ? "checked" : "")
         let taskElement = `                
@@ -250,22 +249,35 @@ function createScreenRenderer (taskCollection) {
         return '<button class="addition_button" id="add_task"><span class="material-symbols-outlined">add_circle</span> Add Task</button>'
     }
 
+    return {
+        generateTaskElement,
+        generateProjectElement,
+        generateTaskForm,
+        generateProjectForm,
+        generateAddTaskButtonElement
+    }
+}
+
+function Controller(model, view) {
+    const tasksScreen = document.querySelector("#tasks"); //Find predefined elements of inverface
+    const projectScreen = document.querySelector("#projectList");
+    let selectedTab = document.querySelector("#all_tasks_tab");
+
     function renderTasks (tasks) {
         tasksScreen.innerHTML = "";
         for (let n in tasks) {
-            tasksScreen.innerHTML+=generateTaskElement(tasks[n], tasks[n].id);
+            tasksScreen.innerHTML+=view.generateTaskElement(tasks[n], tasks[n].id);
         }
         for (let n in tasks) {
             initializeTask(tasks[n].id);
         }
 
         renderTaskAddButton();
-        
     }
 
     function renderProjectForm (projectName) {
 
-        let newNode = document.createRange().createContextualFragment(generateProjectForm(projectName));
+        let newNode = document.createRange().createContextualFragment(view.generateProjectForm(projectName));
         let projectList = document.querySelector("#projectList");
 
         projectList.after(newNode);
@@ -294,8 +306,8 @@ function createScreenRenderer (taskCollection) {
 
         }
         else if(!addTaskButton) {
-            console.log(generateAddTaskButtonElement())
-            let newNode = document.createRange().createContextualFragment(generateAddTaskButtonElement());
+            console.log(view.generateAddTaskButtonElement())
+            let newNode = document.createRange().createContextualFragment(view.generateAddTaskButtonElement());
             tasksScreen.after(newNode);
 
             let addTaskButton = document.querySelector("#add_task");
@@ -313,7 +325,7 @@ function createScreenRenderer (taskCollection) {
 
     function renderProjects (projects) {
         for (let n in projects) {
-            projectScreen.innerHTML+=generateProjectElement(projects[n], projects[n].id);
+            projectScreen.innerHTML+=view.generateProjectElement(projects[n], projects[n].id);
         }
         for (let n in projects) {
             initializeProject(projects[n].id);
@@ -322,7 +334,7 @@ function createScreenRenderer (taskCollection) {
 
     function renderTaskForm (task) {
 
-        let newNode = document.createRange().createContextualFragment(generateTaskForm(task));
+        let newNode = document.createRange().createContextualFragment(view.generateTaskForm(task));
         tasksScreen.after(newNode);
         initializeTaskForm(task);
     }
@@ -341,12 +353,12 @@ function createScreenRenderer (taskCollection) {
 
         const importanceCheckbox = document.querySelector("#checkboxFav"+number);
         importanceCheckbox.addEventListener("change", (e) => {
-            if (e.currentTarget.checked) taskCollection.returnTaskById(number).importance = true;
-            else taskCollection.returnTaskById(number).importance = false;
+            if (e.currentTarget.checked) model.returnTaskById(number).importance = true;
+            else model.returnTaskById(number).importance = false;
         })
 
         const completionCheckbox = document.querySelector("#checkboxMain"+number);
-        if (taskCollection.returnTaskById(number).completion == true) {
+        if (model.returnTaskById(number).completion == true) {
             completionCheckbox.checked=true;
             completionCheckbox.parentElement.parentElement.classList.add("taskCompleted");
         }
@@ -354,11 +366,11 @@ function createScreenRenderer (taskCollection) {
         completionCheckbox.addEventListener("change", (e) => {
             if (e.currentTarget.checked) {
                 completionCheckbox.parentElement.parentElement.classList.add("taskCompleted");
-                taskCollection.returnTaskById(number).completion = true;
+                model.returnTaskById(number).completion = true;
             }
             else {
                 completionCheckbox.parentElement.parentElement.classList.remove("taskCompleted");
-                taskCollection.returnTaskById(number).completion = false;
+                model.returnTaskById(number).completion = false;
             }
         })
         return
@@ -383,14 +395,14 @@ function createScreenRenderer (taskCollection) {
             // console.log(selectedTab)
             selectedTab = projectTab;
 
-            renderTasks(taskCollection.returnTasksProject(projectTab.id.slice(7)));
-            taskCollection.selectedProjectId = Number((projectTab.id.slice(7)));
+            renderTasks(model.returnTasksProject(projectTab.id.slice(7)));
+            model.selectedProjectId = Number((projectTab.id.slice(7)));
         })
         return
     }
     
     function initializeTaskForm (task) {
-        let projectId = taskCollection.selectedProjectId
+        let projectId = model.selectedProjectId
 
         const taskForm = document.querySelector("#newTaskForm");
 
@@ -417,14 +429,14 @@ function createScreenRenderer (taskCollection) {
                 closeTaskForm();
             }
             else {
-                taskCollection.addTask(formTitle.value, formDescription.value, formDate.value, false, projectId);
+                model.addTask(formTitle.value, formDescription.value, formDate.value, false, projectId);
                 closeTaskForm();
             }
             let projectTab = document.querySelector("#project"+projectId);
             removeHighlightting();
             projectTab.parentElement.classList.add("selected");
             selectedTab = projectTab;
-            renderTasks(taskCollection.returnTasksProject(projectId));
+            renderTasks(model.returnTasksProject(projectId));
         })
 
         cancelButton.addEventListener("click", (e) => {
@@ -454,10 +466,10 @@ function createScreenRenderer (taskCollection) {
                 tab.parentElement.classList.add("selected");
                 // console.log(selectedTab)
                 selectedTab = tab;
-                if (selectedTab == allTasksTab) renderTasks(taskCollection.returnTasksAll());
-                if (selectedTab == todayTasksTab) renderTasks(taskCollection.returnTasksToday());
-                if (selectedTab == nextWeekTasksTab) renderTasks(taskCollection.returnTasksNextWeek());
-                if (selectedTab == importantTasksTab) renderTasks(taskCollection.returnTasksImportant());
+                if (selectedTab == allTasksTab) renderTasks(model.returnTasksAll());
+                if (selectedTab == todayTasksTab) renderTasks(model.returnTasksToday());
+                if (selectedTab == nextWeekTasksTab) renderTasks(model.returnTasksNextWeek());
+                if (selectedTab == importantTasksTab) renderTasks(model.returnTasksImportant());
             })
           })
         return
@@ -482,27 +494,28 @@ function createScreenRenderer (taskCollection) {
 
 
 
-let taskCollection = CreateTaskCollection();
+let toDoModel = Model();
+let toDoView = View();
 
-taskCollection.addProject("Daily Tasks");
-taskCollection.addProject("Global Tasks");
+toDoModel.addProject("Daily Tasks");
+toDoModel.addProject("Global Tasks");
 
 
-taskCollection.addTask("Wash dishes", "Wash all the dishes at your home", "2023-03-26", false, 0);
-taskCollection.addTask("Fix Bike", "The tire must be changed", "2023-03-29", true, 0);
-taskCollection.addTask("Finish the Odin project", "The last project is left", "2023-09-19", true, 0);
-taskCollection.addTask("Get a job", "Get a job as a Web Developer", "2023-03-28", true, 1);
-taskCollection.addTask("Build a house", "Find a suitable location and for the good price", "2030-04-20", false, 1);
+toDoModel.addTask("Wash dishes", "Wash all the dishes at your home", "2023-03-26", false, 0);
+toDoModel.addTask("Fix Bike", "The tire must be changed", "2023-03-29", true, 0);
+toDoModel.addTask("Finish the Odin project", "The last project is left", "2023-09-19", true, 0);
+toDoModel.addTask("Get a job", "Get a job as a Web Developer", "2023-03-28", true, 1);
+toDoModel.addTask("Build a house", "Find a suitable location and for the good price", "2030-04-20", false, 1);
 
-let screenRenderer = createScreenRenderer(taskCollection);
+let toDoController = Controller(toDoModel, toDoView);
 
-screenRenderer.renderTasks(taskCollection.returnTasksAll())
+toDoController.renderTasks(toDoModel.returnTasksAll())
 
-taskCollection.addProject("2")
-taskCollection.addProject("123")
-taskCollection.addProject("2")
+toDoModel.addProject("2")
+toDoModel.addProject("123")
+toDoModel.addProject("2")
 
-screenRenderer.renderProjects(taskCollection.returnProjectsAll())
-screenRenderer.initializeTabs();
+toDoController.renderProjects(toDoModel.returnProjectsAll())
+toDoController.initializeTabs();
 
-screenRenderer.renderProjectForm()
+toDoController.renderProjectForm()
