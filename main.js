@@ -312,12 +312,27 @@ function View() {
         return '<button class="addition_button" id="add_task"><span class="material-symbols-outlined">add_circle</span> Add Task</button>'
     }
 
+    function removeHighlightting () {
+        const allTabs = document.querySelectorAll(".groupingTab");
+        allTabs.forEach(tab => {
+            tab.parentElement.classList.remove("selected");
+        })
+        return
+    }
+
+    function highlight (tab) {
+        removeHighlightting();
+        tab.parentElement.classList.add("selected");
+        return
+    }
+
     return {
         generateTaskElement,
         generateProjectElement,
         generateTaskForm,
         generateProjectForm,
-        generateAddTaskButtonElement
+        generateAddTaskButtonElement,
+        highlight
     }
 }
 
@@ -367,14 +382,12 @@ function Controller(model, view) {
                 closeProjectForm();
             }
 
-            removeHighlightting();
             model.selectedTab = "#project"+ model.returnProjectLast().id
             model.selectedProjectId = model.returnProjectLast();
             renderTasks(model.returnTasksCurrentTab());
             renderProjects(model.returnProjectsAll()); 
-
             let projectTab = document.querySelector("#project"+ model.returnProjectLast().id); //REMOVE THIS ANNOING MANUAL HIGHLIGHTING
-            projectTab.parentElement.classList.add("selected");
+            view.highlight(projectTab);
 
         })
 
@@ -526,12 +539,10 @@ function Controller(model, view) {
         })
 
         projectTab.addEventListener('click', event => {
-            removeHighlightting();
-            projectTab.parentElement.classList.add("selected");
+            view.highlight(projectTab);
             model.selectedTab = projectTab.id;
             model.selectedProjectId = number;
             renderTasks(model.returnTasksCurrentTab());
-            
         })
 
         deleteButton.addEventListener('click', event => {
@@ -542,12 +553,14 @@ function Controller(model, view) {
                 model.removeProjectByID(number);
                 renderTasks(model.returnTasksCurrentTab());
                 renderProjects(model.returnProjectsAll());
-                document.querySelector("#all_tasks_tab").parentElement.classList.add("selected");
+                view.highlight(document.querySelector("#all_tasks_tab"));
+                // document.querySelector("#all_tasks_tab").parentElement.classList.add("selected");
             }
             else {
                 model.removeProjectByID(number);
                 renderTasks(model.returnTasksCurrentTab());
                 renderProjects(model.returnProjectsAll());
+                view.highlight(document.querySelector("#"+model.selectedTab));
             }
         })
 
@@ -586,8 +599,7 @@ function Controller(model, view) {
                 closeTaskForm();
             }
             let projectTab = document.querySelector("#project"+projectId);
-            removeHighlightting();
-            projectTab.parentElement.classList.add("selected");
+            view.highlight(projectTab);
             model.selectedTab = projectTab.id;
             renderTasks(model.returnTasksCurrentTab());
         })
@@ -615,22 +627,15 @@ function Controller(model, view) {
 
         tabsCollection.forEach(tab => {
             tab.addEventListener('click', event => {
-                removeHighlightting();
-                tab.parentElement.classList.add("selected");
+                view.highlight(tab);
                 model.selectedTab = tab.id;
                 renderTasks(model.returnTasksCurrentTab());
+                model.selectedProjectId = null;
             })
           })
         return
     }
 
-    function removeHighlightting () {
-        const allTabs = document.querySelectorAll(".groupingTab");
-        allTabs.forEach(tab => {
-            tab.parentElement.classList.remove("selected");
-        })
-        return
-    }
 
     return {
         renderTasks,
