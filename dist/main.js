@@ -54,6 +54,11 @@ function Model() {
         return project;
     }
 
+    const returnProjectLast = () => {
+        let project = collectionOfProjects[collectionOfProjects.length-1];
+        return project;
+    }
+
     const addTask = (title, description, date, importance, projectId) => {
         let task = CreateTask(title, description, date, importance, projectId, taskId);
         taskId++;
@@ -176,6 +181,7 @@ function Model() {
         removeTaskByID,
         removeProjectByID,
         returnTasksCurrentTab,
+        returnProjectLast,
 
         get selectedTab() {
             return selectedTab
@@ -282,8 +288,12 @@ function View() {
         return taskForm
     }
 
-    function generateProjectForm(projectName) {
-        if (!projectName) projectName = " ";
+    function generateProjectForm(project) {
+
+        let projectName;
+        if (project) projectName = project.title;
+        else projectName = "";
+
         let projectForm = `                
         <form class="formObject no_padding" id="newProjectForm" autocomplete="off">
         <label for="titleFormProject">New project's name: </label>
@@ -327,13 +337,71 @@ function Controller(model, view) {
         renderTaskAddButton();
     }
 
-    function renderProjectForm (projectName) {
+    function renderProjectForm (project) {
 
-        let newNode = document.createRange().createContextualFragment(view.generateProjectForm(projectName));
+        let newNode = document.createRange().createContextualFragment(view.generateProjectForm(project));
         let projectList = document.querySelector("#projectList");
 
         projectList.after(newNode);
-        // initializeProjectForm(task);
+
+        initializeProjectForm(project);
+    }
+
+    function initializeProjectForm (project) {
+
+        const projectForm = document.querySelector("#newProjectForm");
+        const formTitle = document.querySelector("#titleFormProject");
+        const addButton = document.querySelector("#addProject");
+        const cancelButton = document.querySelector("#cancelProject");
+        
+        projectForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+        })
+
+        addButton.addEventListener("click", (e) => {
+            if (!(Boolean(formTitle.value))) {
+                return
+            }
+            else {
+                model.addProject(formTitle.value);
+                closeProjectForm();
+            }
+
+            removeHighlightting();
+            model.selectedTab = "#project"+ model.returnProjectLast().id
+            model.selectedProjectId = model.returnProjectLast();
+            renderTasks(model.returnTasksCurrentTab());
+            renderProjects(model.returnProjectsAll()); 
+
+            let projectTab = document.querySelector("#project"+ model.returnProjectLast().id); //REMOVE THIS ANNOING MANUAL HIGHLIGHTING
+            projectTab.parentElement.classList.add("selected");
+
+        })
+
+        cancelButton.addEventListener("click", (e) => {
+            closeProjectForm();
+        })
+
+        return
+    }   
+
+    function closeProjectForm() {
+        let projectForm = document.querySelector("#newProjectForm");
+        projectForm.parentNode.removeChild(projectForm);
+        return
+    }
+
+    function initializeAddProjectButton () {
+        const addProject = document.querySelector("#add_project");
+        let projectForm = document.querySelector("#newProjectForm");
+
+        
+        addProject.addEventListener("click", (e) => {
+            if ((projectForm)) return;
+            else renderProjectForm();
+        });
+
+        return
     }
 
     function renderTaskAddButton () {
@@ -342,8 +410,6 @@ function Controller(model, view) {
         const todayTasksTab = document.querySelector("#today_tab");
         const nextWeekTasksTab = document.querySelector("#next_week_tab");
         const importantTasksTab = document.querySelector("#important_tab");
-        
-        // const mainElement = document.querySelector("main");
 
         let addTaskButton = document.querySelector("#add_task");
         let taskForm = document.querySelector("#newTaskForm");
@@ -364,8 +430,6 @@ function Controller(model, view) {
             let addTaskButton = document.querySelector("#add_task");
             addTaskButton.addEventListener("click", (e) => {
             renderTaskForm();
-
-            // let taskForm = document.querySelector("#newTaskForm");
             addTaskButton.parentNode.removeChild(addTaskButton);
 
         })
@@ -377,12 +441,21 @@ function Controller(model, view) {
     function renderProjects (projects) {
         const projectScreen = document.querySelector("#projectList");
         projectScreen.innerHTML = "";
+        
         for (let n in projects) {
             projectScreen.innerHTML+=view.generateProjectElement(projects[n], projects[n].id);
         }
         for (let n in projects) {
             initializeProject(projects[n].id);
         }
+
+        // if (model.selectedTab != "all_tasks_tab" || model.selectedTab != "today_tab" || model.selectedTab != "next_week_tab" || model.selectedTab != "important_tab") {
+            
+        // }
+        // let projectTab = document.querySelector("#project"+ model.returnProjectLast().id); //REMOVE THIS ANNOING MANUAL HIGHLIGHTING
+        // projectTab.parentElement.classList.add("selected");
+
+        //REPLACE ABOVE WITH UNIVERSAL HIGHLIGHTER OF CURRENTLY SELECTED
     }
 
     function renderTaskForm (task) {
@@ -516,7 +589,6 @@ function Controller(model, view) {
             removeHighlightting();
             projectTab.parentElement.classList.add("selected");
             model.selectedTab = projectTab.id;
-            // renderTasks(model.returnTasksProject(projectId));
             renderTasks(model.returnTasksCurrentTab());
         })
 
@@ -565,7 +637,8 @@ function Controller(model, view) {
         renderProjects,
         initializeTabs,
         renderTaskForm,
-        renderProjectForm
+        renderProjectForm,
+        initializeAddProjectButton
     }
 }
 
@@ -594,5 +667,7 @@ toDoModel.addProject("2")
 
 toDoController.renderProjects(toDoModel.returnProjectsAll())
 toDoController.initializeTabs();
+toDoController.initializeAddProjectButton();
 
-toDoController.renderProjectForm()
+// Write model nethod to start up the entire program
+
