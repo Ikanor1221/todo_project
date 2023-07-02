@@ -1,3 +1,6 @@
+
+
+
 const GBdate = new Intl.DateTimeFormat("en-GB", {});
 
 const menuControl = document.querySelector("#menu_control");    //Find existingiinterface and make it dynamic
@@ -14,10 +17,11 @@ menuControl.addEventListener("click", (e) => {
 function Model() {
     const collectionOfTasks = [];
     const collectionOfProjects = [];
-    // let selectedProjectId
+    let selectedProjectId
     let today = new Date();
     let taskId = 0;
     let projectId = 0;
+    let selectedTab = "all_tasks_tab";
 
     function CreateTask(title, description, date, importance, projectId, id) {
 
@@ -128,18 +132,50 @@ function Model() {
         return collectionOfTasksProject;
     }
 
+    const returnTasksCurrentTab = () => {
+
+        if (selectedTab=="all_tasks_tab") return returnTasksAll();
+        if (selectedTab=="today_tab") return returnTasksToday();
+        if (selectedTab=="next_week_tab") return returnTasksNextWeek();
+        if (selectedTab=="important_tab") return returnTasksImportant();
+        else return returnTasksProject(selectedProjectId);
+
+        return
+    }
+
+    const removeTaskByID = (taskId) => {
+        let task = collectionOfTasks.find(object => {
+            return object.id == taskId;
+        })
+        collectionOfTasks.splice(collectionOfTasks.indexOf(task),1);
+        return;
+    }
+
     return {
         addTask,
         addProject,
-        returnTasksAll,
         returnProjectsAll,
-        returnTasksToday,
-        returnTasksNextWeek,
-        returnTasksImportant,
-        returnTasksProject,
         returnTaskById,
         returnProjectById,
-        // selectedProjectId
+        removeTaskByID,
+        returnTasksCurrentTab,
+
+        get selectedTab() {
+            return selectedTab
+        },
+
+        set selectedTab(value) {
+             selectedTab = value;
+        },
+
+        get selectedProjectId() {
+            return selectedProjectId
+        },
+
+        set selectedProjectId(value) {
+            selectedProjectId = value;
+        }
+
     }
 }
 
@@ -168,8 +204,8 @@ function View() {
                 <span class="material-icons-outlined">more_vert</span>
             </button>
             <menu class="emergingMenu hidden" id="taskMenu${number}">
-                <li><button>Edit</button></li>
-                <li><button>Delete</button></li>
+                <li><button id="buttonEdit${number}">Edit</button></li>
+                <li><button id="buttonDelete${number}">Delete</button></li>
             </menu>
         </div>
         </div>
@@ -260,13 +296,12 @@ function View() {
 
 function Controller(model, view) {
     const tasksScreen = document.querySelector("#tasks"); //Find predefined elements of inverface
-    const projectScreen = document.querySelector("#projectList");
-    let selectedTab = document.querySelector("#all_tasks_tab");
 
     function renderTasks (tasks) {
         tasksScreen.innerHTML = "";
         for (let n in tasks) {
             tasksScreen.innerHTML+=view.generateTaskElement(tasks[n], tasks[n].id);
+            // initializeTask(tasks[n].id);
         }
         for (let n in tasks) {
             initializeTask(tasks[n].id);
@@ -297,7 +332,7 @@ function Controller(model, view) {
         let taskForm = document.querySelector("#newTaskForm");
 
 
-        if (selectedTab == allTasksTab || selectedTab == todayTasksTab || selectedTab == nextWeekTasksTab || selectedTab == importantTasksTab) {
+        if (model.selectedTab == "all_tasks_tab" || model.selectedTab == "today_tab" || model.selectedTab == "next_week_tab" || model.selectedTab == "important_tab") {
             if (addTaskButton) {
                 addTaskButton.parentElement.removeChild(addTaskButton);
             }
@@ -324,6 +359,7 @@ function Controller(model, view) {
     }
 
     function renderProjects (projects) {
+        const projectScreen = document.querySelector("#projectList");
         for (let n in projects) {
             projectScreen.innerHTML+=view.generateProjectElement(projects[n], projects[n].id);
         }
@@ -373,6 +409,13 @@ function Controller(model, view) {
                 model.returnTaskById(number).completion = false;
             }
         })
+
+        const deleteButton = document.querySelector("#buttonDelete"+number);
+        deleteButton.addEventListener("click", (e) => {
+            model.removeTaskByID(number);
+            renderTasks(model.returnTasksCurrentTab());
+        })
+
         return
     }               
 
@@ -392,11 +435,10 @@ function Controller(model, view) {
         projectTab.addEventListener('click', event => {
             removeHighlightting();
             projectTab.parentElement.classList.add("selected");
-            // console.log(selectedTab)
-            selectedTab = projectTab;
+            model.selectedTab = projectTab.id;
 
-            renderTasks(model.returnTasksProject(projectTab.id.slice(7)));
             model.selectedProjectId = Number((projectTab.id.slice(7)));
+            renderTasks(model.returnTasksCurrentTab());
         })
         return
     }
@@ -435,8 +477,9 @@ function Controller(model, view) {
             let projectTab = document.querySelector("#project"+projectId);
             removeHighlightting();
             projectTab.parentElement.classList.add("selected");
-            selectedTab = projectTab;
-            renderTasks(model.returnTasksProject(projectId));
+            model.selectedTab = projectTab.id;
+            // renderTasks(model.returnTasksProject(projectId));
+            renderTasks(model.returnTasksCurrentTab());
         })
 
         cancelButton.addEventListener("click", (e) => {
@@ -453,7 +496,7 @@ function Controller(model, view) {
         return
     }
 
-    function initializeTabs () {
+    function initializeTabs () {    //Maybe all those ID mebtions below are useless
         const allTasksTab = document.querySelector("#all_tasks_tab");
         const todayTasksTab = document.querySelector("#today_tab");
         const nextWeekTasksTab = document.querySelector("#next_week_tab");
@@ -464,12 +507,8 @@ function Controller(model, view) {
             tab.addEventListener('click', event => {
                 removeHighlightting();
                 tab.parentElement.classList.add("selected");
-                // console.log(selectedTab)
-                selectedTab = tab;
-                if (selectedTab == allTasksTab) renderTasks(model.returnTasksAll());
-                if (selectedTab == todayTasksTab) renderTasks(model.returnTasksToday());
-                if (selectedTab == nextWeekTasksTab) renderTasks(model.returnTasksNextWeek());
-                if (selectedTab == importantTasksTab) renderTasks(model.returnTasksImportant());
+                model.selectedTab = tab.id;
+                renderTasks(model.returnTasksCurrentTab());
             })
           })
         return
@@ -509,7 +548,7 @@ toDoModel.addTask("Build a house", "Find a suitable location and for the good pr
 
 let toDoController = Controller(toDoModel, toDoView);
 
-toDoController.renderTasks(toDoModel.returnTasksAll())
+toDoController.renderTasks(toDoModel.returnTasksCurrentTab())
 
 toDoModel.addProject("2")
 toDoModel.addProject("123")
