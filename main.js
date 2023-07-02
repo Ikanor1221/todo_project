@@ -1,9 +1,6 @@
-
-
-
 const GBdate = new Intl.DateTimeFormat("en-GB", {});
 
-const menuControl = document.querySelector("#menu_control");    //Find existingiinterface and make it dynamic
+const menuControl = document.querySelector("#menu_control");    //Find existing interface and make it dynamic
 const mainMenu = document.querySelector("#menu_main_bar");
 const mainScreen = document.querySelector("#sorting");
 
@@ -151,6 +148,25 @@ function Model() {
         return;
     }
 
+    const removeProjectByID = (projectId) => {
+
+        for (let task=0; task < collectionOfTasks.length; task++) {
+
+            if (collectionOfTasks[task].projectId == projectId) {      
+                removeTaskByID(collectionOfTasks[task].id);
+                task--;
+            }
+        }
+
+        let project = collectionOfProjects.find(object => {
+            return object.id == projectId;
+        })
+
+        collectionOfProjects.splice(collectionOfProjects.indexOf(project),1);
+
+        return;
+    }
+
     return {
         addTask,
         addProject,
@@ -158,6 +174,7 @@ function Model() {
         returnTaskById,
         returnProjectById,
         removeTaskByID,
+        removeProjectByID,
         returnTasksCurrentTab,
 
         get selectedTab() {
@@ -219,8 +236,8 @@ function View() {
         <a id="project${number}" class="groupingTab" href="#"><span class="material-symbols-outlined">launch</span>${project.title}</a>
         <button id="buttonProjectMenu${number}" class="menu_modify_button"><span class="material-symbols-outlined">more_horiz</span></button>
         <menu class="emergingMenu moved hidden" id="projectMenu${number}">
-            <li><button>Rename</button></li>
-            <li><button>Delete</button></li>
+            <li><button id="renameProject${number}">Rename</button></li>
+            <li><button id="deleteProject${number}">Delete</button></li>
         </menu>
     </li>
     `
@@ -341,7 +358,6 @@ function Controller(model, view) {
 
         }
         else if(!addTaskButton) {
-            console.log(view.generateAddTaskButtonElement())
             let newNode = document.createRange().createContextualFragment(view.generateAddTaskButtonElement());
             tasksScreen.after(newNode);
 
@@ -360,6 +376,7 @@ function Controller(model, view) {
 
     function renderProjects (projects) {
         const projectScreen = document.querySelector("#projectList");
+        projectScreen.innerHTML = "";
         for (let n in projects) {
             projectScreen.innerHTML+=view.generateProjectElement(projects[n], projects[n].id);
         }
@@ -423,6 +440,9 @@ function Controller(model, view) {
         const projectMenu = document.querySelector("#projectMenu"+number);
         const projectTab = document.querySelector("#project"+number);
         const bodyElement = document.querySelector("body");
+        
+
+        const deleteButton = document.querySelector("#deleteProject"+number);
 
         bodyElement.addEventListener("click", (e) => {
             if (!e.target.closest("#buttonProjectMenu"+number) || !projectMenu.classList.contains("hidden")) {
@@ -436,10 +456,28 @@ function Controller(model, view) {
             removeHighlightting();
             projectTab.parentElement.classList.add("selected");
             model.selectedTab = projectTab.id;
-
-            model.selectedProjectId = Number((projectTab.id.slice(7)));
+            model.selectedProjectId = number;
             renderTasks(model.returnTasksCurrentTab());
+            
         })
+
+        deleteButton.addEventListener('click', event => {
+        
+            if (number==model.selectedProjectId) {
+                model.selectedTab = "all_tasks_tab";
+                model.selectedProjectId = null;
+                model.removeProjectByID(number);
+                renderTasks(model.returnTasksCurrentTab());
+                renderProjects(model.returnProjectsAll());
+                document.querySelector("#all_tasks_tab").parentElement.classList.add("selected");
+            }
+            else {
+                model.removeProjectByID(number);
+                renderTasks(model.returnTasksCurrentTab());
+                renderProjects(model.returnProjectsAll());
+            }
+        })
+
         return
     }
     
