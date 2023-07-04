@@ -172,6 +172,15 @@ function Model() {
         return;
     }
 
+    const editTaskById = (taskId, title, description, date) => {
+        let task = returnTaskById(taskId);
+        task.title = title;
+        task.description = description;
+        task.date = date;
+        collectionOfTasks.sort((a, b) => a.date - b.date);
+        return;
+    }
+
     return {
         addTask,
         addProject,
@@ -182,6 +191,7 @@ function Model() {
         removeProjectByID,
         returnTasksCurrentTab,
         returnProjectLast,
+        editTaskById,
 
         get selectedTab() {
             return selectedTab
@@ -519,6 +529,11 @@ function Controller(model, view) {
             renderTasks(model.returnTasksCurrentTab());
         })
 
+        const editButton = document.querySelector("#buttonEdit"+number);
+        editButton.addEventListener("click", (e) => {
+            renderTaskForm(model.returnTaskById(number));
+        })
+
         return
     }               
 
@@ -598,9 +613,6 @@ function Controller(model, view) {
                 model.addTask(formTitle.value, formDescription.value, formDate.value, false, projectId);
                 closeTaskForm();
             }
-            let projectTab = document.querySelector("#project"+projectId);
-            view.highlight(projectTab);
-            model.selectedTab = projectTab.id;
             renderTasks(model.returnTasksCurrentTab());
         })
 
