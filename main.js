@@ -192,7 +192,7 @@ function Model() {
         },
 
         get selectedProjectId() {
-            return selectedProjectId
+            return selectedProjectId;
         },
 
         set selectedProjectId(value) {
@@ -383,7 +383,7 @@ function Controller(model, view) {
             }
 
             model.selectedTab = "#project"+ model.returnProjectLast().id
-            model.selectedProjectId = model.returnProjectLast();
+            model.selectedProjectId = model.returnProjectLast().id;
             renderTasks(model.returnTasksCurrentTab());
             renderProjects(model.returnProjectsAll()); 
             let projectTab = document.querySelector("#project"+ model.returnProjectLast().id); //REMOVE THIS ANNOING MANUAL HIGHLIGHTING
