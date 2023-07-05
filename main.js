@@ -363,6 +363,8 @@ function Controller(model, view) {
     }
 
     function renderProjectForm (project) {
+        
+        if(document.querySelector("#newProjectForm")) return;
 
         let newNode = document.createRange().createContextualFragment(view.generateProjectForm(project));
         let projectList = document.querySelector("#projectList");
@@ -387,17 +389,21 @@ function Controller(model, view) {
             if (!(Boolean(formTitle.value))) {
                 return
             }
+            else if (project) {
+                project.title = formTitle.value;
+                closeProjectForm();
+                renderProjects(model.returnProjectsAll()); 
+            }
             else {
                 model.addProject(formTitle.value);
                 closeProjectForm();
+                model.selectedTab = "#project"+ model.returnProjectLast().id
+                model.selectedProjectId = model.returnProjectLast().id;
+                renderTasks(model.returnTasksCurrentTab());
+                renderProjects(model.returnProjectsAll()); 
+                let projectTab = document.querySelector("#project"+ model.returnProjectLast().id);
+                view.highlight(projectTab);
             }
-
-            model.selectedTab = "#project"+ model.returnProjectLast().id
-            model.selectedProjectId = model.returnProjectLast().id;
-            renderTasks(model.returnTasksCurrentTab());
-            renderProjects(model.returnProjectsAll()); 
-            let projectTab = document.querySelector("#project"+ model.returnProjectLast().id); //REMOVE THIS ANNOING MANUAL HIGHLIGHTING
-            view.highlight(projectTab);
 
         })
 
@@ -472,13 +478,6 @@ function Controller(model, view) {
             initializeProject(projects[n].id);
         }
 
-        // if (model.selectedTab != "all_tasks_tab" || model.selectedTab != "today_tab" || model.selectedTab != "next_week_tab" || model.selectedTab != "important_tab") {
-            
-        // }
-        // let projectTab = document.querySelector("#project"+ model.returnProjectLast().id); //REMOVE THIS ANNOING MANUAL HIGHLIGHTING
-        // projectTab.parentElement.classList.add("selected");
-
-        //REPLACE ABOVE WITH UNIVERSAL HIGHLIGHTER OF CURRENTLY SELECTED
     }
 
     function renderTaskForm (task) {
@@ -544,6 +543,7 @@ function Controller(model, view) {
         
 
         const deleteButton = document.querySelector("#deleteProject"+number);
+        const renameProject = document.querySelector("#renameProject"+number);
 
         bodyElement.addEventListener("click", (e) => {
             if (!e.target.closest("#buttonProjectMenu"+number) || !projectMenu.classList.contains("hidden")) {
@@ -561,6 +561,8 @@ function Controller(model, view) {
         })
 
         deleteButton.addEventListener('click', event => {
+
+            if(document.querySelector("#newProjectForm")) closeProjectForm();
         
             if (number==model.selectedProjectId) {
                 model.selectedTab = "all_tasks_tab";
@@ -577,6 +579,10 @@ function Controller(model, view) {
                 renderProjects(model.returnProjectsAll());
                 view.highlight(document.querySelector("#"+model.selectedTab));
             }
+        })
+
+        renameProject.addEventListener('click', event => {
+            renderProjectForm(model.returnProjectById(number));
         })
 
         return
