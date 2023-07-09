@@ -16,9 +16,10 @@ function Model() {
     const collectionOfProjects = [];
     let selectedProjectId
     let today = new Date();
+    let selectedTab = "all_tasks_tab";
+
     let taskId = 0;
     let projectId = 0;
-    let selectedTab = "all_tasks_tab";
 
     function CreateTask(title, description, date, importance, projectId, id) {
 
@@ -68,12 +69,14 @@ function Model() {
     }
 
     const addProject = (projectName) => {
+         console.log|(projectId)
         let similiarProject = collectionOfProjects.find(object => {
             return object.title == projectName;
         })
         if (!similiarProject) {
             let newProject = CreateProject(projectName, projectId);
             projectId++;
+            console.log|(projectId)
             collectionOfProjects.push(newProject);
         }
         return;
@@ -181,9 +184,26 @@ function Model() {
         return;
     }
 
+    const setCollectionOfTasks = (newCollectionOfTasks) => {
+        for (i in newCollectionOfTasks) {
+            newCollectionOfTasks[i].date = new Date(newCollectionOfTasks[i].date.replace("T22:00:00.000Z", ""))
+            collectionOfTasks.push(newCollectionOfTasks[i]);
+        }
+        collectionOfTasks.sort((a, b) => a.date - b.date);
+        return
+    }
+
+    const setCollectionOfProjects = (newCollectionOfProjects) => {
+        for (i in newCollectionOfProjects) {
+            collectionOfProjects.push(newCollectionOfProjects[i]);
+        }
+        return
+    }
+
     return {
         addTask,
         addProject,
+        returnTasksAll,
         returnProjectsAll,
         returnTaskById,
         returnProjectById,
@@ -192,6 +212,8 @@ function Model() {
         returnTasksCurrentTab,
         returnProjectLast,
         editTaskById,
+        setCollectionOfTasks,
+        setCollectionOfProjects,
 
         get selectedTab() {
             return selectedTab
@@ -207,7 +229,25 @@ function Model() {
 
         set selectedProjectId(value) {
             selectedProjectId = value;
-        }
+        },
+
+        get taskId() {
+            return taskId;
+        },
+
+        set taskId(value) {
+            taskId = new Number(value);
+        },
+
+        get projectId() {
+            return projectId;
+        },
+
+        set projectId(value) {
+            projectId = new Number(value);
+        },
+
+
 
     }
 }
@@ -683,31 +723,84 @@ function Controller(model, view) {
 }
 
 
+function populateStorage() {
+
+    toDoModel.addProject("Daily Tasks");
+    toDoModel.addProject("Global Tasks");
+
+    toDoModel.addTask("Wash dishes", "Wash all the dishes at your home", "2023-03-26", false, 0);
+    toDoModel.addTask("Fix Bike", "The tire must be changed", "2023-03-29", true, 0);
+    toDoModel.addTask("Finish the Odin project", "The last project is left", "2023-09-19", true, 0);
+    toDoModel.addTask("Get a job", "Get a job as a Web Developer", "2023-03-28", true, 1);
+    toDoModel.addTask("Build a house", "Find a suitable location and for the good price", "2030-04-20", false, 1);
+
+
+    toDoController.renderTasks(toDoModel.returnTasksCurrentTab())
+
+    toDoModel.addProject("2")
+    toDoModel.addProject("123")
+    toDoModel.addProject("2")
+
+    toDoController.renderProjects(toDoModel.returnProjectsAll())
+    toDoController.initializeTabs();
+    toDoController.initializeAddProjectButton();
+
+    localStorage.setItem("tasks", JSON.stringify(toDoModel.returnTasksAll()));
+    localStorage.setItem("projects", JSON.stringify(toDoModel.returnProjectsAll()));
+
+    initializeWindows(toDoModel);
+}
+
+function receiveFromStorage() {
+
+    toDoModel.setCollectionOfTasks(JSON.parse(localStorage.getItem("tasks")));
+    toDoModel.setCollectionOfProjects(JSON.parse(localStorage.getItem("projects")));
+    toDoModel.taskId = localStorage.getItem("taskId");
+    toDoModel.projectId = localStorage.getItem("projectId");
+
+    toDoController.renderTasks(toDoModel.returnTasksCurrentTab())
+
+    console.log(toDoModel.returnProjectsAll())
+
+    toDoController.renderProjects(toDoModel.returnProjectsAll())
+    toDoController.initializeTabs();
+    toDoController.initializeAddProjectButton();
+
+    initializeWindows();
+}
+
+  
+function initializeWindows() {
+
+    window.addEventListener('beforeunload', function (e) {
+        localStorage.setItem("tasks", JSON.stringify(toDoModel.returnTasksAll()));
+        localStorage.setItem("projects", JSON.stringify(toDoModel.returnProjectsAll()));
+    
+        localStorage.setItem("taskId", JSON.stringify(toDoModel.taskId));
+        localStorage.setItem("projectId", JSON.stringify(toDoModel.projectId));
+        // localStorage.clear();
+    });
+    
+    window.addEventListener('beforeupdate', function (e) {
+        localStorage.setItem("tasks", JSON.stringify(toDoModel.returnTasksAll()));
+        localStorage.setItem("projects", JSON.stringify(toDoModel.returnProjectsAll()));
+    
+        localStorage.setItem("taskId", JSON.stringify(toDoModel.taskId));
+        localStorage.setItem("projectId", JSON.stringify(toDoModel.projectId));
+        // localStorage.clear();
+    });
+
+}
+
 
 let toDoModel = Model();
 let toDoView = View();
-
-toDoModel.addProject("Daily Tasks");
-toDoModel.addProject("Global Tasks");
-
-
-toDoModel.addTask("Wash dishes", "Wash all the dishes at your home", "2023-03-26", false, 0);
-toDoModel.addTask("Fix Bike", "The tire must be changed", "2023-03-29", true, 0);
-toDoModel.addTask("Finish the Odin project", "The last project is left", "2023-09-19", true, 0);
-toDoModel.addTask("Get a job", "Get a job as a Web Developer", "2023-03-28", true, 1);
-toDoModel.addTask("Build a house", "Find a suitable location and for the good price", "2030-04-20", false, 1);
-
 let toDoController = Controller(toDoModel, toDoView);
 
-toDoController.renderTasks(toDoModel.returnTasksCurrentTab())
-
-toDoModel.addProject("2")
-toDoModel.addProject("123")
-toDoModel.addProject("2")
-
-toDoController.renderProjects(toDoModel.returnProjectsAll())
-toDoController.initializeTabs();
-toDoController.initializeAddProjectButton();
-
-// Write model nethod to start up the entire program
-
+if (!localStorage.getItem("projects")) {
+    console.log("No!");
+    populateStorage();
+  } else {
+    console.log("Yes!");
+    receiveFromStorage();
+  }
