@@ -336,13 +336,20 @@ function View() {
         return
     }
 
+    function updateMainHeader (text) {
+        const header = document.querySelector("#main_header");
+        header.innerHTML = text;
+        return
+    }
+
     return {
         generateTaskElement,
         generateProjectElement,
         generateTaskForm,
         generateProjectForm,
         generateAddTaskButtonElement,
-        highlight
+        highlight,
+        updateMainHeader
     }
 }
 
@@ -392,7 +399,10 @@ function Controller(model, view) {
             else if (project) {
                 project.title = formTitle.value;
                 closeProjectForm();
-                renderProjects(model.returnProjectsAll()); 
+                renderProjects(model.returnProjectsAll());
+                view.highlight(document.querySelector("#"+model.selectedTab));
+
+                if (model.selectedTab.replace("project","") == project.id) view.updateMainHeader(project.title);
             }
             else {
                 model.addProject(formTitle.value);
@@ -403,6 +413,7 @@ function Controller(model, view) {
                 renderProjects(model.returnProjectsAll()); 
                 let projectTab = document.querySelector("#project"+ model.returnProjectLast().id);
                 view.highlight(projectTab);
+                view.updateMainHeader(model.returnProjectLast().title);
             }
 
         })
@@ -435,10 +446,10 @@ function Controller(model, view) {
 
     function renderTaskAddButton () {
         
-        const allTasksTab = document.querySelector("#all_tasks_tab");
-        const todayTasksTab = document.querySelector("#today_tab");
-        const nextWeekTasksTab = document.querySelector("#next_week_tab");
-        const importantTasksTab = document.querySelector("#important_tab");
+        // const allTasksTab = document.querySelector("#all_tasks_tab");
+        // const todayTasksTab = document.querySelector("#today_tab");
+        // const nextWeekTasksTab = document.querySelector("#next_week_tab");
+        // const importantTasksTab = document.querySelector("#important_tab");
 
         let addTaskButton = document.querySelector("#add_task");
         let taskForm = document.querySelector("#newTaskForm");
@@ -558,6 +569,7 @@ function Controller(model, view) {
             model.selectedTab = projectTab.id;
             model.selectedProjectId = number;
             renderTasks(model.returnTasksCurrentTab());
+            view.updateMainHeader(model.returnProjectById(number).title);
         })
 
         deleteButton.addEventListener('click', event => {
@@ -571,7 +583,6 @@ function Controller(model, view) {
                 renderTasks(model.returnTasksCurrentTab());
                 renderProjects(model.returnProjectsAll());
                 view.highlight(document.querySelector("#all_tasks_tab"));
-                // document.querySelector("#all_tasks_tab").parentElement.classList.add("selected");
             }
             else {
                 model.removeProjectByID(number);
@@ -647,8 +658,14 @@ function Controller(model, view) {
             tab.addEventListener('click', event => {
                 view.highlight(tab);
                 model.selectedTab = tab.id;
+
                 renderTasks(model.returnTasksCurrentTab());
                 model.selectedProjectId = null;
+                console.log(tab.id)
+                if (tab.id=="all_tasks_tab") view.updateMainHeader("All Tasks");
+                else if (tab.id=="today_tab") view.updateMainHeader("Today");
+                else if (tab.id=="next_week_tab") view.updateMainHeader("Next Week");
+                else if (tab.id=="important_tab") view.updateMainHeader("Important");
             })
           })
         return
