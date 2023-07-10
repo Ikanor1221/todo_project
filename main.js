@@ -69,14 +69,12 @@ function Model() {
     }
 
     const addProject = (projectName) => {
-         console.log|(projectId)
         let similiarProject = collectionOfProjects.find(object => {
             return object.title == projectName;
         })
         if (!similiarProject) {
             let newProject = CreateProject(projectName, projectId);
             projectId++;
-            console.log|(projectId)
             collectionOfProjects.push(newProject);
         }
         return;
@@ -701,7 +699,6 @@ function Controller(model, view) {
 
                 renderTasks(model.returnTasksCurrentTab());
                 model.selectedProjectId = null;
-                console.log(tab.id)
                 if (tab.id=="all_tasks_tab") view.updateMainHeader("All Tasks");
                 else if (tab.id=="today_tab") view.updateMainHeader("Today");
                 else if (tab.id=="next_week_tab") view.updateMainHeader("Next Week");
@@ -711,6 +708,72 @@ function Controller(model, view) {
         return
     }
 
+    function populateStorage () {   
+        model.addProject("Daily Tasks");
+        model.addProject("Global Tasks");
+
+        model.addTask("Wash dishes", "Wash all the dishes at your home", "2023-03-26", false, 0);
+        model.addTask("Fix Bike", "The tire must be changed", "2023-03-29", true, 0);
+        model.addTask("Finish the Odin project", "The last project is left", "2023-09-19", true, 0);
+        model.addTask("Get a job", "Get a job as a Web Developer", "2023-03-28", true, 1);
+        model.addTask("Build a house", "Find a suitable location and for the good price", "2030-04-20", false, 1);
+
+
+        toDoController.renderTasks(model.returnTasksCurrentTab())
+
+        model.addProject("2")
+        model.addProject("123")
+        model.addProject("2")
+
+        toDoController.renderProjects(model.returnProjectsAll())
+        toDoController.initializeTabs();
+        toDoController.initializeAddProjectButton();
+
+        localStorage.setItem("tasks", JSON.stringify(model.returnTasksAll()));
+        localStorage.setItem("projects", JSON.stringify(model.returnProjectsAll()));
+
+        initializeWindows(model);
+        return
+    }
+
+    function receiveFromStorage() {
+
+        model.setCollectionOfTasks(JSON.parse(localStorage.getItem("tasks")));
+        model.setCollectionOfProjects(JSON.parse(localStorage.getItem("projects")));
+        model.taskId = localStorage.getItem("taskId");
+        model.projectId = localStorage.getItem("projectId");
+    
+        toDoController.renderTasks(model.returnTasksCurrentTab())
+    
+        toDoController.renderProjects(model.returnProjectsAll())
+        toDoController.initializeTabs();
+        toDoController.initializeAddProjectButton();
+    
+        initializeWindows();
+    }
+
+    function initializeWindows() {
+
+        window.addEventListener('beforeunload', function (e) {
+            localStorage.setItem("tasks", JSON.stringify(toDoModel.returnTasksAll()));
+            localStorage.setItem("projects", JSON.stringify(toDoModel.returnProjectsAll()));
+        
+            localStorage.setItem("taskId", JSON.stringify(toDoModel.taskId));
+            localStorage.setItem("projectId", JSON.stringify(toDoModel.projectId));
+            // localStorage.clear();
+        });
+        
+        window.addEventListener('beforeupdate', function (e) {
+            localStorage.setItem("tasks", JSON.stringify(toDoModel.returnTasksAll()));
+            localStorage.setItem("projects", JSON.stringify(toDoModel.returnProjectsAll()));
+        
+            localStorage.setItem("taskId", JSON.stringify(toDoModel.taskId));
+            localStorage.setItem("projectId", JSON.stringify(toDoModel.projectId));
+            // localStorage.clear();
+        });
+    
+    }
+
 
     return {
         renderTasks,
@@ -718,79 +781,12 @@ function Controller(model, view) {
         initializeTabs,
         renderTaskForm,
         renderProjectForm,
-        initializeAddProjectButton
+        initializeAddProjectButton,
+        populateStorage,
+        receiveFromStorage
     }
 }
 
-
-function populateStorage() {
-
-    toDoModel.addProject("Daily Tasks");
-    toDoModel.addProject("Global Tasks");
-
-    toDoModel.addTask("Wash dishes", "Wash all the dishes at your home", "2023-03-26", false, 0);
-    toDoModel.addTask("Fix Bike", "The tire must be changed", "2023-03-29", true, 0);
-    toDoModel.addTask("Finish the Odin project", "The last project is left", "2023-09-19", true, 0);
-    toDoModel.addTask("Get a job", "Get a job as a Web Developer", "2023-03-28", true, 1);
-    toDoModel.addTask("Build a house", "Find a suitable location and for the good price", "2030-04-20", false, 1);
-
-
-    toDoController.renderTasks(toDoModel.returnTasksCurrentTab())
-
-    toDoModel.addProject("2")
-    toDoModel.addProject("123")
-    toDoModel.addProject("2")
-
-    toDoController.renderProjects(toDoModel.returnProjectsAll())
-    toDoController.initializeTabs();
-    toDoController.initializeAddProjectButton();
-
-    localStorage.setItem("tasks", JSON.stringify(toDoModel.returnTasksAll()));
-    localStorage.setItem("projects", JSON.stringify(toDoModel.returnProjectsAll()));
-
-    initializeWindows(toDoModel);
-}
-
-function receiveFromStorage() {
-
-    toDoModel.setCollectionOfTasks(JSON.parse(localStorage.getItem("tasks")));
-    toDoModel.setCollectionOfProjects(JSON.parse(localStorage.getItem("projects")));
-    toDoModel.taskId = localStorage.getItem("taskId");
-    toDoModel.projectId = localStorage.getItem("projectId");
-
-    toDoController.renderTasks(toDoModel.returnTasksCurrentTab())
-
-    console.log(toDoModel.returnProjectsAll())
-
-    toDoController.renderProjects(toDoModel.returnProjectsAll())
-    toDoController.initializeTabs();
-    toDoController.initializeAddProjectButton();
-
-    initializeWindows();
-}
-
-  
-function initializeWindows() {
-
-    window.addEventListener('beforeunload', function (e) {
-        localStorage.setItem("tasks", JSON.stringify(toDoModel.returnTasksAll()));
-        localStorage.setItem("projects", JSON.stringify(toDoModel.returnProjectsAll()));
-    
-        localStorage.setItem("taskId", JSON.stringify(toDoModel.taskId));
-        localStorage.setItem("projectId", JSON.stringify(toDoModel.projectId));
-        // localStorage.clear();
-    });
-    
-    window.addEventListener('beforeupdate', function (e) {
-        localStorage.setItem("tasks", JSON.stringify(toDoModel.returnTasksAll()));
-        localStorage.setItem("projects", JSON.stringify(toDoModel.returnProjectsAll()));
-    
-        localStorage.setItem("taskId", JSON.stringify(toDoModel.taskId));
-        localStorage.setItem("projectId", JSON.stringify(toDoModel.projectId));
-        // localStorage.clear();
-    });
-
-}
 
 
 let toDoModel = Model();
@@ -798,9 +794,7 @@ let toDoView = View();
 let toDoController = Controller(toDoModel, toDoView);
 
 if (!localStorage.getItem("projects")) {
-    console.log("No!");
-    populateStorage();
+    toDoController.populateStorage();
   } else {
-    console.log("Yes!");
-    receiveFromStorage();
+    toDoController.receiveFromStorage();
   }
