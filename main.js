@@ -1,14 +1,5 @@
 const GBdate = new Intl.DateTimeFormat("en-GB", {});
 
-const menuControl = document.querySelector("#menu_control");    //Find existing interface and make it dynamic
-const mainMenu = document.querySelector("#menu_main_bar");
-const mainScreen = document.querySelector("#sorting");
-
-menuControl.addEventListener("click", (e) => {
-    mainMenu.classList.toggle("removed");
-    mainScreen.classList.toggle("grid_auto");
-})
-
 
 
 function Model() {
@@ -719,20 +710,21 @@ function Controller(model, view) {
         model.addTask("Build a house", "Find a suitable location and for the good price", "2030-04-20", false, 1);
 
 
-        toDoController.renderTasks(model.returnTasksCurrentTab())
+        enderTasks(model.returnTasksCurrentTab())
 
         model.addProject("2")
         model.addProject("123")
         model.addProject("2")
 
-        toDoController.renderProjects(model.returnProjectsAll())
-        toDoController.initializeTabs();
-        toDoController.initializeAddProjectButton();
+        enderProjects(model.returnProjectsAll())
+        initializeTabs();
+        initializeAddProjectButton();
 
         localStorage.setItem("tasks", JSON.stringify(model.returnTasksAll()));
         localStorage.setItem("projects", JSON.stringify(model.returnProjectsAll()));
 
-        initializeWindows(model);
+        initializeWindows();
+        initializeMenu();
         return
     }
 
@@ -743,35 +735,45 @@ function Controller(model, view) {
         model.taskId = localStorage.getItem("taskId");
         model.projectId = localStorage.getItem("projectId");
     
-        toDoController.renderTasks(model.returnTasksCurrentTab())
+        renderTasks(model.returnTasksCurrentTab())
     
-        toDoController.renderProjects(model.returnProjectsAll())
-        toDoController.initializeTabs();
-        toDoController.initializeAddProjectButton();
+        renderProjects(model.returnProjectsAll())
+        initializeTabs();
+        initializeAddProjectButton();
     
         initializeWindows();
+        initializeMenu();
+        return
     }
 
     function initializeWindows() {
 
         window.addEventListener('beforeunload', function (e) {
-            localStorage.setItem("tasks", JSON.stringify(toDoModel.returnTasksAll()));
-            localStorage.setItem("projects", JSON.stringify(toDoModel.returnProjectsAll()));
+            localStorage.setItem("tasks", JSON.stringify(model.returnTasksAll()));
+            localStorage.setItem("projects", JSON.stringify(model.returnProjectsAll()));
         
-            localStorage.setItem("taskId", JSON.stringify(toDoModel.taskId));
-            localStorage.setItem("projectId", JSON.stringify(toDoModel.projectId));
-            // localStorage.clear();
+            localStorage.setItem("taskId", JSON.stringify(model.taskId));
+            localStorage.setItem("projectId", JSON.stringify(model.projectId));
         });
         
         window.addEventListener('beforeupdate', function (e) {
-            localStorage.setItem("tasks", JSON.stringify(toDoModel.returnTasksAll()));
-            localStorage.setItem("projects", JSON.stringify(toDoModel.returnProjectsAll()));
+            localStorage.setItem("tasks", JSON.stringify(model.returnTasksAll()));
+            localStorage.setItem("projects", JSON.stringify(model.returnProjectsAll()));
         
-            localStorage.setItem("taskId", JSON.stringify(toDoModel.taskId));
-            localStorage.setItem("projectId", JSON.stringify(toDoModel.projectId));
-            // localStorage.clear();
+            localStorage.setItem("taskId", JSON.stringify(model.taskId));
+            localStorage.setItem("projectId", JSON.stringify(model.projectId));
         });
-    
+    }
+
+    function initializeMenu () {
+        const menuControl = document.querySelector("#menu_control");    //Find existing interface and make it dynamic
+        const mainMenu = document.querySelector("#menu_main_bar");
+        const mainScreen = document.querySelector("#sorting");
+
+        menuControl.addEventListener("click", (e) => {
+        mainMenu.classList.toggle("removed");
+        mainScreen.classList.toggle("grid_auto");
+})
     }
 
 
