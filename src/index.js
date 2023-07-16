@@ -11,4 +11,4 @@ if (!localStorage.getItem("projects")) {
     toDoController.populateStorage();
   } else {
     toDoController.receiveFromStorage();
-  }
+  };
